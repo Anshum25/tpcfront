@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * TPC Brand Color Scheme - Maroon, Black, White from brochure
+   * Professional and classic design inspired by academic excellence
+   */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+
+    --primary: 0 65% 25%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 14 45% 55%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 65% 25%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 0% 9%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 65% 45%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 14 45% 65%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 65% 45%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+}
+
+/* Universal Carousel heights for laptop view */
+@media screen and (min-width: 1024px) {
+  /* Contact page hero section and carousel */
+  .relative.h-screen.w-full,
+  .relative.h-screen.w-full > div,
+  .relative.h-screen.w-full img {
+    height: 700px !important;
+    min-height: 700px !important;
+    max-height: 700px !important;
+    object-fit: cover !important;
+  }
+
+  /* All other carousel containers */
+  .embla,
+  .carousel,
+  [role="region"][aria-label*="carousel"],
+  [class*="-carousel"],
+  [id*="carousel"] {
+    height: 600px !important;
+    overflow: hidden;
+  }
+
+  /* Carousel inner containers */
+  .embla__container,
+  .embla__viewport,
+  .carousel-inner,
+  [class*="-carousel"] > div,
+  [id*="carousel"] > div {
+    height: 600px !important;
+  }
+
+  /* Carousel slides/items */
+  .embla__slide,
+  .carousel-item,
+  [class*="-carousel"] [role="group"],
+  [id*="carousel"] [role="group"] {
+    height: 600px !important;
+  }
+
+  /* All carousel images */
+  .embla__slide img,
+  .carousel-item img,
+  [class*="-carousel"] img,
+  [id*="carousel"] img,
+  [role="region"][aria-label*="carousel"] img {
+    object-fit: cover !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Gallery carousel specific height */
+  .gallery-carousel,
+  [id*="galleryCarousel"],
+  [role="region"][aria-label*="gallery"] {
+    height: 700px !important;
+  }
+
+  .gallery-carousel .embla__container,
+  .gallery-carousel .embla__viewport,
+  [id*="galleryCarousel"] > div {
+    height: 700px !important;
+  }
+
+  .gallery-carousel .embla__slide,
+  [id*="galleryCarousel"] [role="group"] {
+    height: 700px !important;
+  }
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+@layer utilities {
+  .curve-top {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  }
+
+  .curve-bottom {
+    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .curve-both {
+    clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
+  }
+
+  .blob-shape {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out forwards;
+    opacity: 0;
+  }
+
+  .parallax-slow {
+    transform: translateY(var(--scroll) * 0.5);
+  }
+
+  /* Mobile-specific utilities */
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .mobile-text-responsive {
+    line-height: 1.2;
+  }
+
+  .mobile-hero-text {
+    font-size: clamp(2rem, 8vw, 4rem);
+  }
+
+  .mobile-section-text {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+  }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improved mobile interactions */
+  @media (max-width: 768px) {
+    .hover\:scale-105:hover {
+      transform: scale(1.02);
+    }
+
+    .hover\:shadow-xl:hover {
+      box-shadow:
+        0 10px 25px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .curve-bottom,
+    .curve-both {
+      clip-path: none !important;
+    }
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradient {
+  0%,
+  100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+/* Hide scrollbars globally */
+html, body {
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+}
+::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
