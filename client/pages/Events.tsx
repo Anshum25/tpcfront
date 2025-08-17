@@ -140,16 +140,10 @@ export default function Events() {
             style={{ animationDelay: "4s" }}
           ></div>
         </div>
-        <div className="container mx-auto px-4 relative z-10 flex flex-col items-center justify-center h-56 md:h-72 lg:h-80">
+        <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
           <div className="text-center space-y-8 text-white">
             <div className="space-y-4">
-              <Badge
-                variant="secondary"
-                className="bg-primary/20 text-white border-primary/30 px-6 py-2"
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Events & Competitions
-              </Badge>
+            
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                 {eventsSectionTitle}
               </h1>
@@ -190,7 +184,7 @@ export default function Events() {
               const statusLabel = completed ? "Completed" : "Upcoming";
               const isRegistered = event.registeredUsers && user && event.registeredUsers.some((u: User) => u._id === user.userId);
               return (
-                <Card key={event._id} className="overflow-hidden shadow-lg border border-muted bg-white hover:shadow-xl transition-all duration-300">
+                <Card key={event._id} className="overflow-hidden shadow-lg border border-muted bg-white hover:shadow-xl transition-all duration-300 flex flex-col h-full">
                   {/* Show event image if present */}
                   {event.image && (
                     <img
@@ -212,7 +206,7 @@ export default function Events() {
                       {event.description}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-2">
+                  <CardContent className="flex flex-col flex-1 space-y-2">
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
                       <Calendar className="h-4 w-4" />
                       <span>{event.date}</span>
@@ -223,6 +217,7 @@ export default function Events() {
                       <MapPin className="h-4 w-4" />
                       <span>{event.location}</span>
                     </div>
+                    <div className="flex-1"></div>
                     <Button
                       className="w-full mt-4"
                       variant={event.registrationLink ? (completed ? "secondary" : "default") : "secondary"}

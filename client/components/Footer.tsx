@@ -147,6 +147,16 @@ export default function Footer() {
               <Heart className="h-4 w-4 text-red-500" />
               <span>{useTextBlock("Footer For India's Youth", "for India's Youth")}</span>
             </div>
+            <div className="flex items-center justify-center space-x-2 text-gray-400 text-xs mt-1">
+              <span>Website by</span>
+              <a href="https://www.instagram.com/anshumdev/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 font-semibold flex items-center">
+                @anshumdev
+              </a>
+              <span>&amp;</span>
+              <a href="https://www.instagram.com/dhruvraoo/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 font-semibold flex items-center">
+                @dhruvraoo
+              </a>
+            </div>
           
           </div>
         </div>

@@ -152,7 +152,7 @@ export default function LoadingScreen({
               {/* Logo Container */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-full border border-zinc-600/40 flex items-center justify-center shadow-2xl">
-                  <img src="/images/logo.png" alt="TPC Logo" className="w-16 h-16 object-contain rounded-full bg-white" />
+                  <img src="/images/logo.png" alt="TPC Logo" className="w-16 h-16 object-contain rounded-full " />
                 </div>
               </div>
 
@@ -193,7 +193,7 @@ export default function LoadingScreen({
               <div className="w-16 h-px bg-gradient-to-r from-transparent via-zinc-500 to-transparent mx-auto" />
 
               <p className="text-zinc-400 text-sm font-light tracking-wider uppercase">
-                India's Premier Society
+              India’s largest Debate Society
               </p>
             </motion.div>
 

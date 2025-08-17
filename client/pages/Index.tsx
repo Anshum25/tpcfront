@@ -720,13 +720,19 @@ export default function Index() {
                 <p className="text-[10px] sm:text-sm text-muted-foreground text-center leading-tight">
                   Daily updates & behind-the-scenes
                 </p>
-                <div className="mt-1 sm:mt-3 text-primary font-medium text-[10px] sm:text-sm">
+                <div className="mt-1 sm:mt-2 text-primary font-medium text-[7px] sm:text-sm">
                   @turningpoint_Community
                 </div>
               </a>
 
               {/* LinkedIn Card */}
-              <div className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between min-w-[110px] max-w-[130px] sm:min-w-[180px] sm:max-w-[220px] flex-shrink-0">
+              <a
+                href="https://www.linkedin.com/in/turning-point-community-493217365/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between min-w-[110px] max-w-[130px] sm:min-w-[180px] sm:max-w-[220px] flex-shrink-0 outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Visit our LinkedIn page"
+              >
                 <div className="w-8 h-8 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center mb-2 sm:mb-6">
                   <Linkedin className="h-4 w-4 sm:h-10 sm:w-10 text-white" />
                 </div>
@@ -737,7 +743,7 @@ export default function Index() {
                 <div className="mt-1 sm:mt-3 text-primary font-medium text-[10px] sm:text-sm">
                   Follow Us
                 </div>
-              </div>
+              </a>
             </div>
           </div>
         </div>
@@ -748,4 +754,3 @@ export default function Index() {
     </div>
   );
 }
-

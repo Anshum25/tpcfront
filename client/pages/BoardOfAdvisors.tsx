@@ -90,7 +90,7 @@ export default function BoardOfAdvisors() {
           <button onClick={() => setCarouselIndex((carouselIndex + 1) % heroImages.length)} className="absolute right-2 top-1/2 z-20 bg-white/50 rounded-full px-2 py-1">{">"}</button>
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80"></div>
-        <div className="relative z-10 flex flex-col items-center justify-center h-56 md:h-72 lg:h-80">
+        <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
             {advisorsSectionTitle}
           </h1>

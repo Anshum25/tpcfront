@@ -41,14 +41,14 @@ export default function Navbar() {
           <div className="flex items-center justify-start h-16 pl-[0.5cm]">
             <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
               <img src="/images/logo.png" alt="TPC Logo" className="w-8 sm:w-10 h-8 sm:h-10 object-contain" />
-              <div className="hidden sm:block text-left">
-                <div className="font-bold text-base sm:text-lg text-foreground">
-                  {siteTitle}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {siteTagline}
-                </div>
-              </div>
+              <div className="flex flex-col text-left">
+  <div className="font-bold text-base sm:text-lg text-foreground leading-tight">
+    {siteTitle}
+  </div>
+  <div className="text-xs sm:text-sm text-muted-foreground leading-snug">
+    {siteTagline}
+  </div>
+</div>
             </Link>
           </div>
 
