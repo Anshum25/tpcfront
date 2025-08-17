@@ -615,15 +615,8 @@ export default function Index() {
                     <MapPin className="h-4 w-4" />
                     <span>{event.location}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>{event.participants}</span>
-                  </div>
-                  <div className="w-full mt-4">
-                    <Button className="w-full" variant="secondary" disabled>
-                      Completed
-                    </Button>
-                  </div>
+                  
+                 
                 </CardContent>
               </Card>
             ))}
