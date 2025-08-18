@@ -155,7 +155,7 @@ export default function HomepageCarousel({
   // Multiple images - show carousel
   return (
     <div 
-      className={`absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-auto ${className}`} 
+      className={`relative flex flex-col items-center justify-center w-full h-auto ${className}`} 
       ref={carouselRef}
       tabIndex={0}
       role="region"
