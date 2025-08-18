@@ -144,10 +144,10 @@ export default function Events() {
           <div className="text-center space-y-8 text-white">
             <div className="space-y-4">
             
-              <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+              <h1 className="text-4xl lg:text-7xl font-bold leading-tight">
                 {eventsSectionTitle}
               </h1>
-              <p className="text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-lg lg:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
                 {eventsSectionSubheading}
               </p>
             </div>

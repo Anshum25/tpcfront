@@ -26,12 +26,15 @@ import {
   Award,
   Globe,
   Sparkles,
+  Youtube,
+  MessageCircle,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTextBlock } from "@/hooks/useTextBlock";
 import Footer from "@/components/Footer";
 import { apiService, TeamMember } from "@/services/api";
 import HomepageCarousel from "@/components/HomepageCarousel";
+import HeroButtons from "@/components/HeroButtons";
 
 
 export default function Index() {
@@ -282,55 +285,13 @@ export default function Index() {
                 ))}
               </div>
 
-              {/* Call to Action Buttons - Responsive layout for mobile/desktop */}
-              {/* Desktop: row layout */}
-              <div className="hidden sm:flex flex-row gap-4 pt-6">
-                <Link to="/contact">
-                  <Button
-                    className="text-lg px-8 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg"
-                  >
-                    {joinCommunityButton}
-                    <ChevronRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link to="/events">
-                  <Button
-                    variant="outline"
-                    className="text-lg px-8 border-2 hover:bg-primary/5"
-                  >
-                    {exploreEventsButton}
-                  </Button>
-                </Link>
-                <Link to="/board-of-advisors">
-                  <Button
-                    variant="outline"
-                    className="text-lg px-8 border-2 hover:bg-primary/5"
-                  >
-                    {ourSupportersButton}
-                  </Button>
-                </Link>
-              </div>
-              {/* Mobile: Join button full width, then two buttons in a row */}
-              <div className="flex flex-col gap-2 pt-6 sm:hidden">
-                <Link to="/contact">
-                  <Button className="w-full text-base h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg">
-                    {joinCommunityButton}
-                    <ChevronRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <div className="flex flex-row gap-2">
-                  <Link to="/events" className="flex-1">
-                    <Button variant="outline" className="w-full text-base h-10 border-2 hover:bg-primary/5">
-                      {exploreEventsButton}
-                    </Button>
-                  </Link>
-                  <Link to="/board-of-advisors" className="flex-1">
-                    <Button variant="outline" className="w-full text-base h-10 border-2 hover:bg-primary/5">
-                      {ourSupportersButton}
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+              {/* Call to Action Buttons - Desktop only */}
+              <HeroButtons
+                joinCommunityButton={joinCommunityButton}
+                exploreEventsButton={exploreEventsButton}
+                ourSupportersButton={ourSupportersButton}
+                layout="desktop"
+              />
             </div>
 
             {/* Right Image */}
@@ -362,6 +323,18 @@ export default function Index() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Mobile Call to Action Buttons - Between triangle image and stats */}
+      <section className="pb-8 sm:hidden bg-background">
+        <div className="container mx-auto px-4">
+          <HeroButtons
+            joinCommunityButton={joinCommunityButton}
+            exploreEventsButton={exploreEventsButton}
+            ourSupportersButton={ourSupportersButton}
+            layout="mobile"
+          />
         </div>
       </section>
 
@@ -702,10 +675,10 @@ export default function Index() {
               </p>
             </div>
 
-            {/* Responsive horizontal scroll row for social cards - small on mobile, big on laptop */}
-            <div className="flex flex-row gap-2 max-w-full overflow-x-auto justify-center items-stretch py-2">
+            {/* Responsive grid for social cards - 2x2 on mobile, 1x4 on desktop */}
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6 max-w-4xl mx-auto">
               {/* Instagram Card */}
-              <a href="https://instagram.com/turningpoint_Community" target="_blank" rel="noopener noreferrer" className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between min-w-[110px] max-w-[130px] sm:min-w-[180px] sm:max-w-[220px] flex-shrink-0">
+              <a href="https://instagram.com/turningpoint_Community" target="_blank" rel="noopener noreferrer" className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between">
                 <div className="w-8 h-8 sm:w-20 sm:h-20 bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl flex items-center justify-center mb-2 sm:mb-6">
                   <Instagram className="h-4 w-4 sm:h-10 sm:w-10 text-white" />
                 </div>
@@ -723,7 +696,7 @@ export default function Index() {
                 href="https://www.linkedin.com/in/turning-point-community-493217365/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between min-w-[110px] max-w-[130px] sm:min-w-[180px] sm:max-w-[220px] flex-shrink-0 outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Visit our LinkedIn page"
               >
                 <div className="w-8 h-8 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center mb-2 sm:mb-6">
@@ -735,6 +708,46 @@ export default function Index() {
                 </p>
                 <div className="mt-1 sm:mt-3 text-primary font-medium text-[10px] sm:text-sm">
                   Follow Us
+                </div>
+              </a>
+
+              {/* YouTube Card */}
+              <a
+                href="https://youtube.com/@TPIActivities"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between outline-none focus:ring-2 focus:ring-red-500"
+                aria-label="Visit our YouTube channel"
+              >
+                <div className="w-8 h-8 sm:w-20 sm:h-20 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center mb-2 sm:mb-6">
+                  <Youtube className="h-4 w-4 sm:h-10 sm:w-10 text-white" />
+                </div>
+                <h3 className="font-semibold text-xs sm:text-lg mb-1 sm:mb-2">YouTube</h3>
+                <p className="text-[10px] sm:text-sm text-muted-foreground text-center leading-tight">
+                  Debates & discussions
+                </p>
+                <div className="mt-1 sm:mt-3 text-primary font-medium text-[10px] sm:text-sm">
+                  @TPIActivities
+                </div>
+              </a>
+
+              {/* WhatsApp Card */}
+              <a
+                href="https://wa.me/919725567871"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-2xl px-2 py-3 sm:px-8 sm:py-8 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-between outline-none focus:ring-2 focus:ring-green-500"
+                aria-label="Contact us on WhatsApp"
+              >
+                <div className="w-8 h-8 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-2 sm:mb-6">
+                  <MessageCircle className="h-4 w-4 sm:h-10 sm:w-10 text-white" />
+                </div>
+                <h3 className="font-semibold text-xs sm:text-lg mb-1 sm:mb-2">WhatsApp</h3>
+                <p className="text-[10px] sm:text-sm text-muted-foreground text-center leading-tight">
+                  Direct contact & support
+                </p>
+                <div className="mt-1 sm:mt-3 text-primary font-medium text-[10px] sm:text-sm">
+                  Aditya Bhatt
                 </div>
               </a>
             </div>

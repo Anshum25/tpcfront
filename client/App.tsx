@@ -57,15 +57,15 @@ const ScrollToTop = () => {
 
 const AppContent = () => {
   const [isLoading, setIsLoading] = useState(true);
+  // New: track homepage data readiness
+  const [homepageReady, setHomepageReady] = useState(false);
 
+  // Hide loading screen when homepageReady is true
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
+    if (homepageReady) {
       setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  }, [homepageReady]);
 
   if (isLoading) {
     return <LoadingScreen onComplete={() => setIsLoading(false)} />;
@@ -75,7 +75,8 @@ const AppContent = () => {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Index />} />
+        {/* Pass setHomepageReady to Index for homepage loading orchestration */}
+        <Route path="/" element={<Index onHomepageReady={() => setHomepageReady(true)} />} />
         <Route path="/about" element={<About />} />
         <Route path="/events" element={<Events />} />
         <Route path="/team" element={<Team />} />

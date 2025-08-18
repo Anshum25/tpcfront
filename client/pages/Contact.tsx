@@ -71,11 +71,11 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email Us",
-      details: "anshum25506@gmail.com",
+      details: "official.turningpointCommunity@gmail.com",
       description: "Send us your queries and we'll respond within 24 hours",
       color: "text-blue-600",
       bg: "bg-blue-100",
-      onClick: () => window.location.href = 'mailto:anshum25506@gmail.com',
+      onClick: () => window.location.href = 'mailto:official.turningpointCommunity@gmail.com',
     },
     {
       icon: Phone,

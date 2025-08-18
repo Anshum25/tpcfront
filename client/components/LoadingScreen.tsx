@@ -12,7 +12,7 @@ export default function LoadingScreen({
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prev) => {
-        const newProgress = Math.min(prev + Math.random() * 12 + 3, 100);
+        const newProgress = Math.min(prev + Math.random() * 6 + 2, 100);
 
         if (newProgress >= 100) {
           clearInterval(timer);
@@ -22,7 +22,7 @@ export default function LoadingScreen({
         }
         return newProgress;
       });
-    }, 180);
+    }, 250); // slowed down interval
 
     return () => clearInterval(timer);
   }, [onComplete]);
@@ -41,17 +41,11 @@ export default function LoadingScreen({
   };
 
   const logoVariants = {
-    initial: {
-      scale: 0.8,
-      opacity: 0,
-    },
+    initial: { scale: 0.8, opacity: 0 },
     animate: {
       scale: 1,
       opacity: 1,
-      transition: {
-        duration: 1.2,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
+      transition: { duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] },
     },
     exit: {
       scale: 0.9,
@@ -61,18 +55,11 @@ export default function LoadingScreen({
   };
 
   const textVariants = {
-    initial: {
-      y: 20,
-      opacity: 0,
-    },
+    initial: { y: 20, opacity: 0 },
     animate: {
       y: 0,
       opacity: 1,
-      transition: {
-        delay: 0.6,
-        duration: 0.8,
-        ease: "easeOut",
-      },
+      transition: { delay: 0.6, duration: 0.8, ease: "easeOut" },
     },
     exit: {
       y: -20,
@@ -82,18 +69,11 @@ export default function LoadingScreen({
   };
 
   const progressVariants = {
-    initial: {
-      opacity: 0,
-      y: 30,
-    },
+    initial: { opacity: 0, y: 30 },
     animate: {
       opacity: 1,
       y: 0,
-      transition: {
-        delay: 1,
-        duration: 0.8,
-        ease: "easeOut",
-      },
+      transition: { delay: 1, duration: 0.8, ease: "easeOut" },
     },
     exit: {
       opacity: 0,
@@ -136,14 +116,8 @@ export default function LoadingScreen({
               {/* Outer Ring */}
               <motion.div
                 className="w-32 h-32 mx-auto relative"
-                animate={{
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
               >
                 <div className="w-full h-full border border-zinc-700/50 rounded-full" />
                 <div className="absolute inset-2 border border-zinc-600/30 rounded-full" />
@@ -152,16 +126,18 @@ export default function LoadingScreen({
               {/* Logo Container */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-full border border-zinc-600/40 flex items-center justify-center shadow-2xl">
-                  <img src="/images/logo.png" alt="TPC Logo" className="w-16 h-16 object-contain rounded-full " />
+                  <img
+                    src="/images/logo.png"
+                    alt="TPC Logo"
+                    className="w-16 h-16 object-contain rounded-full "
+                  />
                 </div>
               </div>
 
               {/* Subtle Glow */}
               <motion.div
                 className="absolute inset-0 rounded-full bg-white/5 blur-xl scale-150"
-                animate={{
-                  opacity: [0.1, 0.3, 0.1],
-                }}
+                animate={{ opacity: [0.1, 0.3, 0.1] }}
                 transition={{
                   duration: 3,
                   repeat: Infinity,
@@ -180,9 +156,7 @@ export default function LoadingScreen({
             >
               <h1
                 className="text-4xl text-white font-light tracking-[0.2em] leading-tight"
-                style={{
-                  fontFamily: "serif",
-                }}
+                style={{ fontFamily: "serif" }}
               >
                 TURNING POINT
                 <span className="block text-2xl tracking-[0.3em] mt-2 text-zinc-300">
@@ -193,7 +167,7 @@ export default function LoadingScreen({
               <div className="w-16 h-px bg-gradient-to-r from-transparent via-zinc-500 to-transparent mx-auto" />
 
               <p className="text-zinc-400 text-sm font-light tracking-wider uppercase">
-              India’s largest Debate Society
+                India’s largest Debate Society
               </p>
             </motion.div>
 
@@ -218,9 +192,7 @@ export default function LoadingScreen({
                   {/* Elegant shimmer */}
                   <motion.div
                     className="absolute top-0 w-8 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                    animate={{
-                      x: [-32, 256],
-                    }}
+                    animate={{ x: [-32, 256] }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
@@ -232,9 +204,7 @@ export default function LoadingScreen({
                 {/* Progress Percentage */}
                 <motion.div
                   className="mt-4 text-zinc-400 text-xs font-light tracking-widest"
-                  animate={{
-                    opacity: [0.6, 1, 0.6],
-                  }}
+                  animate={{ opacity: [0.6, 1, 0.6] }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
@@ -271,9 +241,7 @@ export default function LoadingScreen({
           <div className="absolute bottom-8 right-8">
             <motion.div
               className="w-8 h-8 border-r border-b border-zinc-700/50"
-              animate={{
-                opacity: [0.3, 0.8, 0.3],
-              }}
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{
                 duration: 3,
                 repeat: Infinity,
@@ -285,9 +253,7 @@ export default function LoadingScreen({
           <div className="absolute top-8 left-8">
             <motion.div
               className="w-8 h-8 border-l border-t border-zinc-700/50"
-              animate={{
-                opacity: [0.3, 0.8, 0.3],
-              }}
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
               transition={{
                 duration: 3,
                 repeat: Infinity,

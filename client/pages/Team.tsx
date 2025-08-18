@@ -155,10 +155,10 @@ export default function Team() {
         <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
           <div className="text-center space-y-8 text-white">
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+              <h1 className="text-4xl lg:text-7xl font-bold leading-tight">
                 {teamSectionTitle}
               </h1>
-              <p className="text-xl lg:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
+              <p className="text-lg lg:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
                 {teamSectionSubheading}
               </p>
             </div>
