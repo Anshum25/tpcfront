@@ -44,7 +44,7 @@ const CityCard = memo(({ city, onRegisterClick }: CityCardProps) => {
           size="lg"
           onClick={() => onRegisterClick(city)}
         >
-          Register Now
+          Join Now
         </Button>
       </CardContent>
     </Card>

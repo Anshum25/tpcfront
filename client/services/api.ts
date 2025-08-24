@@ -63,6 +63,7 @@ export interface TeamMember {
   linkedin?: string;
   image?: string;
   city: string;
+  core?: boolean;
 }
 
 export interface Advisor {

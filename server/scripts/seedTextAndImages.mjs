@@ -14,7 +14,7 @@ const textBlocks = [
   { title: "Homepage Stat 3 Label", value: "Distinguished Advisors" },
   { title: "Homepage Stat 4 Number", value: "6+" },
   { title: "Homepage Stat 4 Label", value: "Partner Institutions" },
-  { title: "Achievement 1 Title", value: "Gujarat's Largest" },
+  { title: "Achievement 1 Title", value: "India's Largest" },
   { title: "Achievement 1 Subtitle", value: "Student-Run Society" },
   { title: "Achievement 2 Title", value: "10+ Years" },
   { title: "Achievement 2 Subtitle", value: "of Excellence" },

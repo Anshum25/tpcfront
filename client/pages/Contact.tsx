@@ -320,7 +320,7 @@ export default function Contact() {
             <div className="w-full max-w-2xl mx-auto flex flex-col gap-4">
               <Card>
                 <CardContent className="p-3 md:p-6">
-                  <form onSubmit={handleSubmit} className="space-y-10">
+                  <form id="contact-form" onSubmit={handleSubmit} className="space-y-10">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8">
                       <div className="space-y-2">
                         <Label htmlFor="name" className="text-sm md:text-xl">{contactFormName}</Label>

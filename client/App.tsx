@@ -14,16 +14,24 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
-import Events from "./pages/Events";
-import Team from "./pages/Team";
-import Gallery from "./pages/Gallery";
-import Contact from "./pages/Contact";
-import Login from "./pages/Login";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
-import BoardOfAdvisors from "./pages/BoardOfAdvisors";
+import { Suspense, lazy } from "react";
 
-const queryClient = new QueryClient();
+const Events = lazy(() => import("./pages/Events"));
+const Team = lazy(() => import("./pages/Team"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Login = lazy(() => import("./pages/Login"));
+const Admin = lazy(() => import("./pages/Admin"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const BoardOfAdvisors = lazy(() => import("./pages/BoardOfAdvisors"));
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+    },
+  },
+});
 
 // Placeholder components for missing pages
 const About = () => (
@@ -78,18 +86,18 @@ const AppContent = () => {
         {/* Pass setHomepageReady to Index for homepage loading orchestration */}
         <Route path="/" element={<Index onHomepageReady={() => setHomepageReady(true)} />} />
         <Route path="/about" element={<About />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/board-of-advisors" element={<BoardOfAdvisors />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/events" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Events /></Suspense>} />
+        <Route path="/team" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Team /></Suspense>} />
+        <Route path="/board-of-advisors" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><BoardOfAdvisors /></Suspense>} />
+        <Route path="/gallery" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Gallery /></Suspense>} />
+        <Route path="/contact" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Contact /></Suspense>} />
+        <Route path="/login" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Login /></Suspense>} />
         <Route
           path="/admin"
-          element={<Admin />}
+          element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Admin /></Suspense>}
         />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><NotFound /></Suspense>} />
       </Routes>
     </>
   );

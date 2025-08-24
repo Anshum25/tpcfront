@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -40,12 +42,31 @@ function useCarouselImages(partPrefix: string) {
 }
 
 export default function Events() {
-  const [events, setEvents] = useState<DBEvent[]>([]);
+  const navigate = useNavigate();
+
+  const handleJoinTeamClick = () => {
+    navigate('/team');
+    // Wait for navigation, then scroll to #cities
+    setTimeout(() => {
+      const el = document.getElementById('cities');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 200);
+  };
+
   const [filter, setFilter] = useState<string>("All");
-  const [isLoading, setIsLoading] = useState(false);
   const [registering, setRegistering] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const user = apiService.getStoredUser();
+
+  const { data, isLoading } = useQuery<DBEvent[]>({
+    queryKey: ["events"],
+    queryFn: apiService.getEvents,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: false,
+  });
+  const events = data ?? [];
   const categories = [
     "All",
     "Debate",
@@ -56,14 +77,6 @@ export default function Events() {
   ];
   const eventsSectionTitle = useTextBlock("Events Section Title");
   const eventsSectionSubheading = useTextBlock("Events Section Subheading");
-
-  useEffect(() => {
-    setIsLoading(true);
-    apiService.getEvents()
-      .then(setEvents)
-      .catch(() => setEvents([]))
-      .finally(() => setIsLoading(false));
-  }, []);
 
   const filteredEvents = events.filter(
     (event) => filter === "All" || event.category === filter,
@@ -120,6 +133,9 @@ export default function Events() {
             <img
               key={img}
               src={img}
+              srcSet={img && (img.endsWith('.jpg') || img.endsWith('.jpeg') || img.endsWith('.png'))
+                ? `${img.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${img} 2x`
+                : undefined}
               alt={`Events Hero ${idx + 1}`}
               className="w-full h-full object-cover"
             />
@@ -143,7 +159,7 @@ export default function Events() {
         <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
           <div className="text-center space-y-8 text-white">
             <div className="space-y-4">
-            
+
               <h1 className="text-4xl lg:text-7xl font-bold leading-tight">
                 {eventsSectionTitle}
               </h1>
@@ -189,9 +205,13 @@ export default function Events() {
                   {event.image && (
                     <img
                       src={getEventImageUrl(event.image)}
+                      srcSet={event.image && (event.image.endsWith('.jpg') || event.image.endsWith('.jpeg') || event.image.endsWith('.png'))
+                        ? `${event.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${getEventImageUrl(event.image)} 2x`
+                        : undefined}
                       alt={event.title}
                       className="w-full h-48 object-cover"
                       style={{ borderBottom: '1px solid #eee' }}
+                      loading="lazy"
                     />
                   )}
                   <CardHeader className="pb-2 flex flex-col gap-2">
@@ -255,12 +275,12 @@ export default function Events() {
           </h2>
           <p className="text-muted-foreground text-lg mb-8 max-w-2xl mx-auto">
             Join our organizing team and help create impactful events that shape
-            the future leaders of Gujarat.
+            the future leaders of India.
           </p>
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="text-lg px-8"
-            onClick={() => window.open('https://linktr.ee/ArgueFest?lt_utm_source=lt_share_link#470901593', '_blank')}
+            onClick={handleJoinTeamClick}
           >
             Join Our Team
           </Button>

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,32 +38,40 @@ import HomepageCarousel from "@/components/HomepageCarousel";
 import HeroButtons from "@/components/HeroButtons";
 
 
-export default function Index() {
-  const [hero1, setHero1] = useState<string | null>(null);
-  const [hero2, setHero2] = useState<string | null>(null);
-  const [coreTeamMembers, setCoreTeamMembers] = useState<TeamMember[]>([]);
+interface IndexProps {
+  onHomepageReady?: () => void;
+}
 
-  useEffect(() => {
-    apiService.getImages().then(images => {
-      const h1 = images.find(img => img.part === "Homepage Hero 1");
-      const h2 = images.find(img => img.part === "Homepage Hero 2");
-      setHero1(h1 ? (h1.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${h1.url}` : h1.url) : null);
-      setHero2(h2 ? (h2.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${h2.url}` : h2.url) : null);
-    });
-  }, []);
+export default function Index({ onHomepageReady }: IndexProps) {
+  // Hero images via React Query
+  const { data: images = [], isLoading: imagesLoading } = useQuery<{ part: string; url: string }[]>({
+    queryKey: ["homepageImages"],
+    queryFn: () => apiService.getImages(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+  const hero1 = (() => {
+    const h1 = images.find(img => img.part === "Homepage Hero 1");
+    return h1 ? (h1.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${h1.url}` : h1.url) : null;
+  })();
+  const hero2 = (() => {
+    const h2 = images.find(img => img.part === "Homepage Hero 2");
+    return h2 ? (h2.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${h2.url}` : h2.url) : null;
+  })();
 
-  useEffect(() => {
-    apiService.getPublicTeamMembers().then((members) => {
-      const core = members.filter(m => m.core === true);
-      setCoreTeamMembers(core);
-    });
-  }, []);
+  // Core team members via React Query
+  const { data: teamMembers = [] } = useQuery<TeamMember[]>({
+    queryKey: ["coreTeamMembers"],
+    queryFn: () => apiService.getPublicTeamMembers(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
+  const coreTeamMembers = teamMembers.filter((m: TeamMember) => m.core === true);
 
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   const stats = [
     { number: "10,000+", label: "Active Students", icon: Users },
@@ -71,7 +80,7 @@ export default function Index() {
     { number: "6+", label: "Partner Institutions", icon: Award },
   ];
 
-  
+
   const siteTitle = useTextBlock("Site Title");
   const siteTagline = useTextBlock("Site Tagline");
   const homepageHeading = useTextBlock("Homepage Heading");
@@ -148,11 +157,15 @@ export default function Index() {
     },
   ];
 
-  const [featuredEvents, setFeaturedEvents] = useState<any[]>([]);
-
-  useEffect(() => {
-    apiService.getLatestCompletedEvents().then(setFeaturedEvents).catch(() => setFeaturedEvents([]));
-  }, []);
+  // Featured events via React Query
+  const { data: featuredEvents = [] } = useQuery<any[]>({
+    queryKey: ["featuredEvents"],
+    queryFn: () => apiService.getLatestCompletedEvents(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
 
   const coreTeam = [
     {
@@ -192,7 +205,7 @@ export default function Index() {
   const stat3Label = useTextBlock("Footer Stat 3 Label") || "Distinguished Advisors";
   const stat4Number = useTextBlock("Footer Stat 4 Number") || "6+";
   const stat4Label = useTextBlock("Footer Stat 4 Label") || "Partner Institutions";
-  const achievement1Title = useTextBlock("Achievement 1 Title") || "Gujarat's Largest";
+  const achievement1Title = useTextBlock("Achievement 1 Title") || "India's Largest";
   const achievement1Subtitle = useTextBlock("Achievement 1 Subtitle") || "Student-Run Society";
   const achievement2Title = useTextBlock("Achievement 2 Title") || "10+ Years";
   const achievement2Subtitle = useTextBlock("Achievement 2 Subtitle") || "of Excellence";
@@ -241,14 +254,14 @@ export default function Index() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div className={`space-y-8 ${isVisible ? "animate-slide-up" : ""}`}>
+            <div className="space-y-8">
               <div className="space-y-6">
                 <Badge
                   variant="secondary"
                   className="text-sm font-medium px-6 py-3 bg-primary/10 border-primary/20 animate-fade-in"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
-                  {siteTagline || "Gujarat's Largest Student-Run Society"}
+                  {siteTagline || "India's Largest Student-Run Society"}
                 </Badge>
 
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-foreground">
@@ -258,7 +271,7 @@ export default function Index() {
                 </h1>
 
                 <p className="text-lg sm:text-xl lg:text-2xl text-muted-foreground leading-relaxed">
-                  {homepageSubheading || "Empowering over 10,000 students across Gujarat through intellectually enriching platforms that foster leadership, critical thinking, and civic engagement."}
+                  {homepageSubheading || "Empowering over 10,000 students across India through intellectually enriching platforms that foster leadership, critical thinking, and civic engagement."}
                 </p>
               </div>
 
@@ -301,6 +314,9 @@ export default function Index() {
                   {hero1 && (
                     <img
                       src={hero1}
+                      srcSet={hero1 && (hero1.endsWith('.jpg') || hero1.endsWith('.jpeg') || hero1.endsWith('.png'))
+                        ? `${hero1.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${hero1} 2x`
+                        : undefined}
                       alt="Students actively participating in a university lecture"
                       className="w-full h-full object-cover"
                     />
@@ -528,7 +544,7 @@ export default function Index() {
               {eventsSectionTitle || "Events we have done"}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {eventsSectionSubheading || "Be part of Gujarat's most prestigious academic competitions"}
+              {eventsSectionSubheading || "Be part of India's most prestigious academic competitions"}
             </p>
           </div>
 
@@ -552,8 +568,12 @@ export default function Index() {
                 <div className="relative aspect-video overflow-hidden">
                   <img
                     src={event.image ? (event.image.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${event.image}` : event.image) : '/images/hero.jpg'}
+                    srcSet={event.image && (event.image.endsWith('.jpg') || event.image.endsWith('.jpeg') || event.image.endsWith('.png'))
+                      ? `${event.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${event.image} 2x`
+                      : undefined}
                     alt={event.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   {event.category && (
@@ -588,8 +608,8 @@ export default function Index() {
                     <MapPin className="h-4 w-4" />
                     <span>{event.location}</span>
                   </div>
-                  
-                 
+
+
                 </CardContent>
               </Card>
             ))}
@@ -671,7 +691,7 @@ export default function Index() {
                 {connectSectionTitle}
               </h2>
               <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-{connectSectionSubheading}
+                {connectSectionSubheading}
               </p>
             </div>
 

@@ -148,12 +148,12 @@ let TextBlock, Image;
     "mongodb+srv://myuser:Anshum@255@tpc.z8zgugo.mongodb.net/tpcDB?retryWrites=true&w=majority&appName=TPC";
   var textBlocks = [
     { title: "Site Title", value: "Turning Point Community" },
-    { title: "Site Tagline", value: "Gujarat's Largest Student-Run Society" },
+    { title: "Site Tagline", value: "India's Largest Student-Run Society" },
     { title: "Homepage Heading", value: "Welcome to Turning Point Community" },
     {
       title: "Homepage Subheading",
       value:
-        "Empowering over 10,000 students across Gujarat through intellectually enriching platforms that foster leadership, critical thinking, and civic engagement.",
+        "Empowering over 10,000 students across India through intellectually enriching platforms that foster leadership, critical thinking, and civic engagement.",
     },
     { title: "About Section Title", value: "Shaping Tomorrow's Leaders" },
     { title: "About Section Badge", value: "About TPC" },
@@ -170,7 +170,7 @@ let TextBlock, Image;
     { title: "Events Section Title", value: "Events we have done" },
     {
       title: "Events Section Subheading",
-      value: "Be part of Gujarat's most prestigious academic competitions",
+      value: "Be part of India's most prestigious academic competitions",
     },
     { title: "Leaders Section Title", value: "Meet Our Leaders" },
     {
@@ -192,7 +192,7 @@ let TextBlock, Image;
     {
       title: "Contact Section Subheading",
       value:
-        "Ready to join Gujarat's most dynamic student Community? We're here to help and answer any questions you might have.",
+        "Ready to join India's most dynamic student Community? We're here to help and answer any questions you might have.",
     },
     { title: "Contact Form Title", value: "Send us a Message" },
     {
@@ -210,7 +210,7 @@ let TextBlock, Image;
     {
       title: "Team Section Subheading",
       value:
-        "Meet the passionate individuals and distinguished advisors who drive TPC's mission to empower Gujarat's youth",
+        "Meet the passionate individuals and distinguished advisors who drive TPC's mission to empower India's youth",
     },
     { title: "Core Team Title", value: "Core Team" },
     {
@@ -239,7 +239,7 @@ let TextBlock, Image;
     { title: "Homepage Stat 3 Label", value: "Distinguished Advisors" },
     { title: "Homepage Stat 4 Number", value: "6+" },
     { title: "Homepage Stat 4 Label", value: "Partner Institutions" },
-    { title: "Achievement 1 Title", value: "Gujarat's Largest" },
+    { title: "Achievement 1 Title", value: "India's Largest" },
     { title: "Achievement 1 Subtitle", value: "Student-Run Society" },
     { title: "Achievement 2 Title", value: "10+ Years" },
     { title: "Achievement 2 Subtitle", value: "of Excellence" },

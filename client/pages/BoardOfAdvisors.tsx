@@ -1,25 +1,29 @@
 
 import { useTextBlock } from "@/hooks/useTextBlock";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { apiService, Advisor } from "@/services/api";
 import Footer from "@/components/Footer";
 import AdvisorSection from "@/components/AdvisorSection";
 
 function useCarouselImages(partPrefix: string) {
-  const [images, setImages] = useState<string[]>([]);
-  useEffect(() => {
-    apiService.getImages().then(allImages => {
-      setImages(
-        allImages
-          .filter(img => img.part && img.part.startsWith(partPrefix))
-          .sort((a, b) => {
-            const getNum = (part: string) => parseInt(part.replace(/\D/g, "")) || 0;
-            return getNum(a.part!) - getNum(b.part!);
-          })
-          .map(img => img.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${img.url}` : img.url)
-      );
-    });
-  }, [partPrefix]);
+  const { data: images = [] } = useQuery<string[]>({
+    queryKey: ["carouselImages", partPrefix],
+    queryFn: async () => {
+      const allImages = await apiService.getImages();
+      return allImages
+        .filter(img => img.part && img.part.startsWith(partPrefix))
+        .sort((a, b) => {
+          const getNum = (part: string) => parseInt(part.replace(/\D/g, "")) || 0;
+          return getNum(a.part!) - getNum(b.part!);
+        })
+        .map(img => img.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${img.url}` : img.url);
+    },
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
   return images;
 }
 
@@ -34,44 +38,22 @@ export default function BoardOfAdvisors() {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
 
-  // Separate state for board advisors and interactions
-  const [boardAdvisors, setBoardAdvisors] = useState<Advisor[]>([]);
-  const [interactions, setInteractions] = useState<Advisor[]>([]);
-  const [boardLoading, setBoardLoading] = useState(true);
-  const [interactionsLoading, setInteractionsLoading] = useState(true);
-  const [boardError, setBoardError] = useState<string | null>(null);
-  const [interactionsError, setInteractionsError] = useState<string | null>(null);
+  // Advisors and interactions via React Query
+  const { data: advisorsData = [], isLoading: advisorsLoading, error: advisorsError } = useQuery<Advisor[]>({
+    queryKey: ["advisors"],
+    queryFn: () => apiService.getAdvisors(),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 
-  useEffect(() => {
-    async function fetchBoardAdvisors() {
-      try {
-        const data = await apiService.getAdvisors();
-        // Filter for board advisors (isInteraction: false or undefined)
-        const boardData = data.filter(advisor => !advisor.isInteraction);
-        setBoardAdvisors(boardData);
-      } catch (err: any) {
-        setBoardError(err.message || "Failed to load board advisors");
-      } finally {
-        setBoardLoading(false);
-      }
-    }
+  const boardAdvisors = advisorsData.filter((advisor: Advisor) => !advisor.isInteraction);
+  const interactions = advisorsData.filter((advisor: Advisor) => advisor.isInteraction);
 
-    async function fetchInteractions() {
-      try {
-        const data = await apiService.getAdvisors();
-        // Filter for interactions (isInteraction: true)
-        const interactionData = data.filter(advisor => advisor.isInteraction);
-        setInteractions(interactionData);
-      } catch (err: any) {
-        setInteractionsError(err.message || "Failed to load interactions");
-      } finally {
-        setInteractionsLoading(false);
-      }
-    }
+  const boardLoading = advisorsLoading;
+  const interactionsLoading = advisorsLoading;
+  const boardError = advisorsError ? (advisorsError as Error).message : null;
+  const interactionsError = advisorsError ? (advisorsError as Error).message : null;
 
-    fetchBoardAdvisors();
-    fetchInteractions();
-  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,6 +84,7 @@ export default function BoardOfAdvisors() {
       {/* Advisors Section */}
       <AdvisorSection
         title={advisorsSectionTitle}
+        subtitle={advisorsSectionSubheading}
         advisors={boardAdvisors}
         loading={boardLoading}
         error={boardError}

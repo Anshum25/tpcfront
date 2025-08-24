@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, Linkedin } from "lucide-react";
 import { useTextBlock } from "@/hooks/useTextBlock";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Footer from "@/components/Footer";
 import RegistrationModal from "@/components/RegistrationModal";
 import CityCard from "@/components/CityCard";
@@ -28,25 +29,42 @@ interface Advisor {
 }
 
 function useCarouselImages(partPrefix: string) {
-  const [images, setImages] = useState<string[]>([]);
-  useEffect(() => {
-    apiService.getImages().then(allImages => {
-      setImages(
-        allImages
-          .filter(img => img.part && img.part.startsWith(partPrefix))
-          .sort((a, b) => {
-            const getNum = (part: string) => parseInt(part.replace(/\D/g, "")) || 0;
-            return getNum(a.part!) - getNum(b.part!);
-          })
-          .map(img => img.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${img.url}` : img.url)
-      );
-    });
-  }, [partPrefix]);
+  const { data: images = [] } = useQuery<string[]>({
+    queryKey: ["carouselImages", partPrefix],
+    queryFn: async () => {
+      const allImages = await apiService.getImages();
+      return allImages
+        .filter(img => img.part && img.part.startsWith(partPrefix))
+        .sort((a, b) => {
+          const getNum = (part: string) => parseInt(part.replace(/\D/g, "")) || 0;
+          return getNum(a.part!) - getNum(b.part!);
+        })
+        .map(img => img.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${img.url}` : img.url);
+    },
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
   return images;
 }
 
 
+import { useNavigate } from "react-router-dom";
+
 export default function Team() {
+  const navigate = useNavigate();
+
+  const handleJoinTeamContactClick = () => {
+    navigate('/contact');
+    setTimeout(() => {
+      const el = document.getElementById('contact-form');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 200);
+  };
+
   const teamSectionTitle = useTextBlock("Team Section Title");
   const teamSectionSubheading = useTextBlock("Team Section Subheading");
   const coreTeamTitle = useTextBlock("Core Team Title");
@@ -61,42 +79,28 @@ export default function Team() {
   const heroImages = useCarouselImages("Team Photo");
   const [carouselIndex, setCarouselIndex] = useState(0);
   const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [cities, setCities] = useState<CityData[]>([]);
-  const [citiesLoading, setCitiesLoading] = useState(true);
-  const [citiesError, setCitiesError] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
-  useEffect(() => {
-    async function fetchTeam() {
-      try {
-        const data = await apiService.getPublicTeamMembers();
-        setTeamMembers(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load team members");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchTeam();
-  }, []);
+  // Team members via React Query
+  const { data: teamMembers = [], isLoading: loading, error } = useQuery<TeamMember[]>({
+    queryKey: ["teamMembers"],
+    queryFn: () => apiService.getPublicTeamMembers(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
 
-  useEffect(() => {
-    async function fetchCities() {
-      try {
-        const data = await apiService.getCities();
-        setCities(data);
-      } catch (err: any) {
-        setCitiesError(err.message || "Failed to load cities");
-      } finally {
-        setCitiesLoading(false);
-      }
-    }
-    fetchCities();
-  }, []);
+  // Cities via React Query
+  const { data: cities = [], isLoading: citiesLoading, error: citiesError } = useQuery<CityData[]>({
+    queryKey: ["cities"],
+    queryFn: () => apiService.getCities(),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+  });
 
   // 1. Filter core members (by a 'core' field if present, or by position)
   const coreMembers = teamMembers.filter(m => m.core === true);
@@ -125,7 +129,6 @@ export default function Team() {
     async function refreshCities() {
       try {
         const data = await apiService.getCities();
-        setCities(data);
       } catch (err) {
         console.error('Failed to refresh cities:', err);
       }
@@ -180,7 +183,15 @@ export default function Team() {
                 {/* Avatar/Image */}
                 <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-primary/10 mr-4">
                   {member.image ? (
-                    <img src={member.image.startsWith('/uploads/') ? BACKEND_URL + member.image : member.image} alt={member.name} className="w-full h-full object-cover" />
+                    <img
+                      src={member.image.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${member.image}` : member.image}
+                      srcSet={member.image.endsWith('.jpg') || member.image.endsWith('.jpeg') || member.image.endsWith('.png')
+                        ? `${member.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${member.image} 2x`
+                        : undefined}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   ) : (
                     <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary">
                       {member.name.split(' ').map(n => n[0]).join('')}
@@ -221,7 +232,7 @@ export default function Team() {
           {loading ? (
             <LoadingSkeleton type="team" count={8} />
           ) : error ? (
-            <div className="text-center text-red-500 py-8">{error}</div>
+            <div className="text-center text-red-500 py-8">{typeof error === 'string' ? error : (error?.message || 'Failed to load team members')}</div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {nonCoreMembers.map((member) => (
@@ -237,7 +248,7 @@ export default function Team() {
       </section>
 
       {/* Cities We Have Covered Section */}
-      <section className="py-16 bg-neutral-50">
+      <section id="cities" className="py-16 bg-neutral-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1 rounded-full border border-primary text-primary font-semibold mb-4">Our Reach</span>
@@ -250,7 +261,7 @@ export default function Team() {
           {citiesLoading ? (
             <LoadingSkeleton type="city" count={3} />
           ) : citiesError ? (
-            <div className="text-center text-red-500 py-8">{citiesError}</div>
+            <div className="text-center text-red-500 py-8">{typeof citiesError === 'string' ? citiesError : (citiesError?.message || 'Failed to load cities')}</div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
               {activeCities.map((city) => (
@@ -278,7 +289,7 @@ export default function Team() {
             <Button
               size="lg"
               className="text-lg px-8"
-              onClick={() => window.open('https://linktr.ee/ArgueFest?lt_utm_source=lt_share_link#470901593', '_blank')}
+              onClick={handleJoinTeamContactClick}
             >
               {joinTeamButton}
             </Button>
