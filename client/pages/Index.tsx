@@ -40,7 +40,7 @@ import { useEffect, useMemo } from "react";
 import LoadingScreen from "../components/LoadingScreen";
 
 // Type for homepage loading state on window
-export {};
+export { };
 declare global {
   interface Window {
     __HOMEPAGE_LOAD_STATE__?: { loaded: number; total: number };
@@ -111,7 +111,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
   const achievement2Subtitle = useTextBlock("Achievement 2 Subtitle") || "of Excellence";
   const achievement3Title = useTextBlock("Achievement 3 Title") || "Recognized by";
   const achievement3Subtitle = useTextBlock("Achievement 3 Subtitle") || "Top Institutions";
-  
+
   // Use a single variable assignment from the textBlocks array
   const [
     siteTitle, siteTagline, homepageHeading, homepageSubheading, aboutSectionTitle, aboutSectionBadge, exploreSectionTitle, exploreSectionSubheading, quickLink1, quickLink2, quickLink3, quickLink4, quickLink4Desc, eventsSectionTitle, eventsSectionSubheading, leadersSectionTitle, leadersSectionSubheading, connectSectionTitle, connectSectionSubheading, whatWeDoTitle, whatWeDo1, whatWeDo2, whatWeDo3, whatWeDo4, contactSectionTitle, contactSectionSubheading, contactFormTitle, contactFormSubheading, contactFormName, contactFormEmail, contactFormPhone, contactFormSubject, contactFormMessage, contactFormButton, teamSectionTitle, teamSectionSubheading, coreTeamTitle, coreTeamSubheading, advisorsSectionTitle, advisorsSectionSubheading, connectWithTeamTitle, connectWithTeamSubheading, joinTeamButton, contactTeamButton
@@ -149,7 +149,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
       { number: stat3Number, label: stat3Label, icon: Star },
       { number: stat4Number, label: stat4Label, icon: Award },
     ];
-    
+
     const achievements = [
       {
         title: achievement1Title,
@@ -216,7 +216,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
       // Simulate a small delay for a smooth transition before hiding the loader
       const timeout = setTimeout(() => {
         setShowLoadingScreen(false);
-      }, 500); // Wait 500ms after data is ready
+      }, 1000); // Wait 1 second after data is ready
       return () => clearTimeout(timeout);
     }
   }, [allDataLoaded]);

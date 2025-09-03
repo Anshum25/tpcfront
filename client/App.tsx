@@ -64,36 +64,11 @@ const ScrollToTop = () => {
 };
 
 const AppContent = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  // New: track homepage data readiness
-  const [homepageReady, setHomepageReady] = useState(false);
-
-  // Hide loading screen when homepageReady is true
-  useEffect(() => {
-    if (homepageReady) {
-      setIsLoading(false);
-    }
-  }, [homepageReady]);
-
-  // Calculate real homepage loading progress
-  let loaded = 0;
-  let total = 0;
-  let progress = 0;
-  if (window.__HOMEPAGE_LOAD_STATE__) {
-    loaded = window.__HOMEPAGE_LOAD_STATE__.loaded;
-    total = window.__HOMEPAGE_LOAD_STATE__.total;
-    progress = total > 0 ? (loaded / total) * 100 : 0;
-  }
-  if (isLoading) {
-    return <LoadingScreen onComplete={() => setIsLoading(false)} progress={progress} loaded={loaded} total={total} />;
-  }
-
   return (
     <>
       <Navbar />
       <Routes>
-        {/* Pass setHomepageReady to Index for homepage loading orchestration */}
-        <Route path="/" element={<Index onHomepageReady={() => setHomepageReady(true)} />} />
+        <Route path="/" element={<Index />} />
         <Route path="/about" element={<About />} />
         <Route path="/events" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Events /></Suspense>} />
         <Route path="/team" element={<Suspense fallback={<LoadingScreen onComplete={() => {}} />}><Team /></Suspense>} />
