@@ -75,8 +75,17 @@ const AppContent = () => {
     }
   }, [homepageReady]);
 
+  // Calculate real homepage loading progress
+  let loaded = 0;
+  let total = 0;
+  let progress = 0;
+  if (window.__HOMEPAGE_LOAD_STATE__) {
+    loaded = window.__HOMEPAGE_LOAD_STATE__.loaded;
+    total = window.__HOMEPAGE_LOAD_STATE__.total;
+    progress = total > 0 ? (loaded / total) * 100 : 0;
+  }
   if (isLoading) {
-    return <LoadingScreen onComplete={() => setIsLoading(false)} />;
+    return <LoadingScreen onComplete={() => setIsLoading(false)} progress={progress} loaded={loaded} total={total} />;
   }
 
   return (

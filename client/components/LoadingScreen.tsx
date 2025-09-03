@@ -1,30 +1,31 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function LoadingScreen({
-  onComplete,
-}: {
+interface LoadingScreenProps {
   onComplete: () => void;
-}) {
-  const [progress, setProgress] = useState(0);
+  progress?: number; // 0-100
+  loaded?: number;
+  total?: number;
+}
+
+export default function LoadingScreen({ onComplete, progress = 0, loaded, total }: LoadingScreenProps) {
   const [isExiting, setIsExiting] = useState(false);
 
+  // When progress reaches 100, trigger exit
   useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const newProgress = Math.min(prev + Math.random() * 6 + 2, 100);
+    if (progress >= 100) {
+      setIsExiting(true);
+      setTimeout(onComplete, 1200);
+    }
+  }, [progress, onComplete]);
 
-        if (newProgress >= 100) {
-          clearInterval(timer);
-          setIsExiting(true);
-          setTimeout(onComplete, 1200);
-          return 100;
-        }
-        return newProgress;
-      });
-    }, 250); // slowed down interval
-
-    return () => clearInterval(timer);
+  // Enforce a maximum loading time of 3.5 seconds
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(onComplete, 1200);
+    }, 3500);
+    return () => clearTimeout(timeout);
   }, [onComplete]);
 
   const containerVariants = {
@@ -201,7 +202,7 @@ export default function LoadingScreen({
                   />
                 </div>
 
-                {/* Progress Percentage */}
+                {/* Progress Percentage and loaded/total */}
                 <motion.div
                   className="mt-4 text-zinc-400 text-xs font-light tracking-widest"
                   animate={{ opacity: [0.6, 1, 0.6] }}
@@ -211,7 +212,7 @@ export default function LoadingScreen({
                     ease: "easeInOut",
                   }}
                 >
-                  {Math.round(progress)}%
+                
                 </motion.div>
               </div>
 

@@ -78,19 +78,7 @@ export default function Events() {
   const eventsSectionTitle = useTextBlock("Events Section Title");
   const eventsSectionSubheading = useTextBlock("Events Section Subheading");
 
-  // Sort: live (upcoming/ongoing) events first, then completed events
-  const sortedEvents = [...events].sort((a, b) => {
-    const isCompletedA = isEventCompleted(a);
-    const isCompletedB = isEventCompleted(b);
-    if (isCompletedA === isCompletedB) {
-      // If both are completed or both are live, sort by date descending (newest first)
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    }
-    // Live events (not completed) come first
-    return isCompletedA ? 1 : -1;
-  });
-
-  const filteredEvents = sortedEvents.filter(
+  const filteredEvents = events.filter(
     (event) => filter === "All" || event.category === filter,
   );
 
