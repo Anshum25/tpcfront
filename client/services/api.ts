@@ -224,6 +224,7 @@ class ApiService {
   }
 
   async getEvents(): Promise<Event[]> {
+    await new Promise(res => setTimeout(res, 2000)); // Artificial 2s delay for testing
     const response = await fetch(`${API_BASE_URL}/events`);
     if (!response.ok) throw new Error('Failed to fetch events');
     return response.json();

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiService, Advisor } from "@/services/api";
 import Footer from "@/components/Footer";
 import AdvisorSection from "@/components/AdvisorSection";
+import TimedCarouselTextEvents from "../components/TimedCarouselTextEvents";
 
 function useCarouselImages(partPrefix: string) {
   const { data: images = [] } = useQuery<string[]>({
@@ -28,15 +29,12 @@ function useCarouselImages(partPrefix: string) {
 }
 
 export default function BoardOfAdvisors() {
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
   const advisorsSectionTitle = useTextBlock("Advisors Section Title") || "Board of Advisors";
   const advisorsSectionSubheading = useTextBlock("Advisors Section Subheading") || "Meet the distinguished advisors guiding our mission.";
   const interactionsSectionTitle = useTextBlock("Interactions Section Title", "Interactions");
   const interactionsSectionSubheading = useTextBlock("Interactions Section Subheading", "Explore our collaborative partnerships and Community engagements");
-
-  // Hero/slider section state and images
-  const heroImages = useCarouselImages("Board of Advisors");
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
 
   // Advisors and interactions via React Query
   const { data: advisorsData = [], isLoading: advisorsLoading, error: advisorsError } = useQuery<Advisor[]>({
@@ -45,6 +43,20 @@ export default function BoardOfAdvisors() {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
+
+  // Hero/slider section state and images
+  const heroImages = useCarouselImages("Board of Advisors");
+
+  // White fullscreen loading screen until text blocks AND advisors data are ready
+  const textBlocksLoading = !advisorsSectionTitle || !advisorsSectionSubheading;
+  const allDataLoaded = !textBlocksLoading && !advisorsLoading;
+  if (!allDataLoaded) {
+    return (
+      <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
+    );
+  }
+
+  const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
 
   const boardAdvisors = advisorsData.filter((advisor: Advisor) => !advisor.isInteraction);
   const interactions = advisorsData.filter((advisor: Advisor) => advisor.isInteraction);
@@ -73,12 +85,15 @@ export default function BoardOfAdvisors() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80"></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
-            {advisorsSectionTitle}
-          </h1>
-          <p className="text-lg md:text-2xl text-white max-w-2xl text-center">
-           {advisorsSectionSubheading}
-          </p>
+          <div className="text-center space-y-8 text-white">
+            <div className="space-y-4">
+
+              <TimedCarouselTextEvents
+                title={advisorsSectionTitle || "Board of Advisors"}
+                subtitle={advisorsSectionSubheading || "Meet our advisors"}
+              />
+            </div>
+          </div>
         </div>
       </section>
       {/* Advisors Section */}

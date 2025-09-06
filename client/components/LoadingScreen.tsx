@@ -87,7 +87,7 @@ export default function LoadingScreen({ onComplete, progress = 0, loaded, total 
     <AnimatePresence>
       {!isExiting && (
         <motion.div
-          className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-black flex items-center justify-center z-50"
+          className="fixed inset-0 bg-gradient-to-br from-black via-[#09090b] to-[#050505] flex items-center justify-center z-50"
           variants={containerVariants}
           initial="initial"
           animate="animate"

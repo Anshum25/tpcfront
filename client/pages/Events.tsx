@@ -14,6 +14,7 @@ import { Calendar, MapPin, Users, Clock } from "lucide-react";
 import { apiService, Event as DBEvent, User } from "@/services/api";
 import { useTextBlock } from "@/hooks/useTextBlock";
 import Footer from "@/components/Footer";
+import TimedCarouselTextEvents from "../components/TimedCarouselTextEvents";
 
 const getEventImageUrl = (image?: string) => {
   if (!image) return undefined;
@@ -41,6 +42,8 @@ function useCarouselImages(partPrefix: string) {
   return images;
 }
 
+import LoadingScreen from "../components/LoadingScreen";
+
 export default function Events() {
   const navigate = useNavigate();
 
@@ -58,6 +61,7 @@ export default function Events() {
   const [filter, setFilter] = useState<string>("All");
   const [registering, setRegistering] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const user = apiService.getStoredUser();
 
   const { data, isLoading } = useQuery<DBEvent[]>({
@@ -77,6 +81,20 @@ export default function Events() {
   ];
   const eventsSectionTitle = useTextBlock("Events Section Title");
   const eventsSectionSubheading = useTextBlock("Events Section Subheading");
+  
+  // Carousel logic for hero images - moved before early return
+  const heroImages = useCarouselImages("Events Section");
+
+  // White fullscreen loading screen until data is ready
+  const textBlocksLoading = !eventsSectionTitle || !eventsSectionSubheading;
+  const allDataLoaded = !isLoading && !textBlocksLoading;
+  if (!allDataLoaded) {
+    return (
+      <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
+    );
+    // Or use <LoadingScreen /> if you want a spinner/progress
+    // return <LoadingScreen />;
+  }
 
   const filteredEvents = events.filter(
     (event) => filter === "All" || event.category === filter,
@@ -112,9 +130,6 @@ export default function Events() {
     }
   };
 
-  // Carousel logic for hero images
-  const heroImages = useCarouselImages("Events Section");
-  const [carouselIndex, setCarouselIndex] = useState(0);
   const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
 
   // Helper to determine if event is completed
@@ -160,12 +175,10 @@ export default function Events() {
           <div className="text-center space-y-8 text-white">
             <div className="space-y-4">
 
-              <h1 className="text-4xl lg:text-7xl font-bold leading-tight">
-                {eventsSectionTitle}
-              </h1>
-              <p className="text-lg lg:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
-                {eventsSectionSubheading}
-              </p>
+              <TimedCarouselTextEvents
+                title={eventsSectionTitle || "Events"}
+                subtitle={eventsSectionSubheading || "Explore our events"}
+              />
             </div>
           </div>
         </div>

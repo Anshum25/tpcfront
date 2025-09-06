@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +36,8 @@ import { useTextBlock } from "@/hooks/useTextBlock";
 import Footer from "@/components/Footer";
 import { apiService, TeamMember } from "@/services/api";
 import HomepageCarousel from "@/components/HomepageCarousel";
+import SkeletonCarouselText from "@/components/SkeletonCarouselText";
+import TimedCarouselText from "@/components/TimedCarouselText";
 import HeroButtons from "@/components/HeroButtons";
 import { useEffect, useMemo } from "react";
 import LoadingScreen from "../components/LoadingScreen";
@@ -52,6 +55,66 @@ interface IndexProps {
 }
 
 export default function Index({ onHomepageReady }: IndexProps) {
+  const queryClient = useQueryClient();
+
+  // Prefetch all major page queries on mount
+  useEffect(() => {
+    // Team page
+    queryClient.prefetchQuery({
+      queryKey: ["teamMembers"],
+      queryFn: () => apiService.getPublicTeamMembers(),
+      staleTime: Infinity,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["cities"],
+      queryFn: () => apiService.getCities(),
+      staleTime: Infinity,
+    });
+    // Events page
+    queryClient.prefetchQuery({
+      queryKey: ["events"],
+      queryFn: () => apiService.getEvents(),
+      staleTime: 1000 * 60 * 5,
+    });
+    // Advisors page
+    queryClient.prefetchQuery({
+      queryKey: ["advisors"],
+      queryFn: () => apiService.getAdvisors(),
+      staleTime: Infinity,
+    });
+    // Gallery page
+    queryClient.prefetchQuery({
+      queryKey: ["galleryImages"],
+      queryFn: () => apiService.getGalleryImages(),
+      staleTime: Infinity,
+    });
+    // Carousel images for other pages (optional, if not already fetched)
+    queryClient.prefetchQuery({
+      queryKey: ["carouselImages", "Team Photo"],
+      queryFn: () => apiService.getImages(),
+      staleTime: Infinity,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["carouselImages", "Events Section"],
+      queryFn: () => apiService.getImages(),
+      staleTime: Infinity,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["carouselImages", "Contact Us Carousel"],
+      queryFn: () => apiService.getImages(),
+      staleTime: Infinity,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["carouselImages", "Board of Advisors"],
+      queryFn: () => apiService.getImages(),
+      staleTime: Infinity,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["carouselImages", "Gallery Photo"],
+      queryFn: () => apiService.getImages(),
+      staleTime: Infinity,
+    });
+  }, [queryClient]);
   const [isReady, setIsReady] = useState(false);
 
   // Hero images via React Query
@@ -385,12 +448,10 @@ export default function Index({ onHomepageReady }: IndexProps) {
             {/* Description Section */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <Badge variant="outline" className="border-primary text-primary">
-                  {aboutSectionBadge || "About TPC"}
-                </Badge>
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold leading-tight mb-4">
-                  {aboutSectionTitle || "Shaping Tomorrow's Leaders"}
-                </h2>
+                <TimedCarouselText
+                  badge={aboutSectionBadge || "About TPC"}
+                  title={aboutSectionTitle || "Shaping Tomorrow's Leaders"}
+                />
               </div>
               <div className="space-y-6 text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">
                 {aboutTPCDescription ? (

@@ -13,6 +13,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Footer from "@/components/Footer";
 import RegistrationModal from "@/components/RegistrationModal";
+import TimedCarouselTextEvents from "../components/TimedCarouselTextEvents";
 import CityCard from "@/components/CityCard";
 import TeamMemberCard from "@/components/TeamMemberCard";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
@@ -65,6 +66,10 @@ export default function Team() {
     }, 200);
   };
 
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+
   const teamSectionTitle = useTextBlock("Team Section Title");
   const teamSectionSubheading = useTextBlock("Team Section Subheading");
   const coreTeamTitle = useTextBlock("Core Team Title");
@@ -73,14 +78,8 @@ export default function Team() {
   const connectWithTeamSubheading = useTextBlock("Connect With Team Subheading");
   const joinTeamButton = useTextBlock("Join Team Button");
   const contactTeamButton = useTextBlock("Contact Team Button");
- const leadersSectionTitle = useTextBlock("Leaders Section Title"); 
- const quickLink2 = useTextBlock("Quick Link 2");
-
-  const heroImages = useCarouselImages("Team Photo");
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
-  const [selectedCity, setSelectedCity] = useState<CityData | null>(null);
-  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const leadersSectionTitle = useTextBlock("Leaders Section Title"); 
+  const quickLink2 = useTextBlock("Quick Link 2");
 
   // Team members via React Query
   const { data: teamMembers = [], isLoading: loading, error } = useQuery<TeamMember[]>({
@@ -91,6 +90,19 @@ export default function Team() {
     refetchOnMount: false,
     refetchOnReconnect: false,
   });
+
+  const heroImages = useCarouselImages("Team Photo");
+
+  // White fullscreen loading screen until text blocks AND team data are ready
+  const textBlocksLoading = !teamSectionTitle || !teamSectionSubheading;
+  const allDataLoaded = !textBlocksLoading && !loading;
+  if (!allDataLoaded) {
+    return (
+      <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
+    );
+  }
+
+  const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
 
   // Cities via React Query
   const { data: cities = [], isLoading: citiesLoading, error: citiesError } = useQuery<CityData[]>({
@@ -158,12 +170,11 @@ export default function Team() {
         <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
           <div className="text-center space-y-8 text-white">
             <div className="space-y-4">
-              <h1 className="text-4xl lg:text-7xl font-bold leading-tight">
-                {teamSectionTitle}
-              </h1>
-              <p className="text-lg lg:text-2xl text-gray-200 max-w-4xl mx-auto leading-relaxed">
-                {teamSectionSubheading}
-              </p>
+
+              <TimedCarouselTextEvents
+                title={teamSectionTitle || "Team"}
+                subtitle={teamSectionSubheading || "Meet our team"}
+              />
             </div>
           </div>
         </div>
@@ -178,45 +189,52 @@ export default function Team() {
             <p className="text-lg text-muted-foreground">{coreTeamSubheading}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {coreMembers.map(member => (
-              <Card key={member._id} className="flex flex-row items-center justify-center p-6 rounded-2xl shadow-lg w-full h-auto md:w-96 md:h-48 mx-auto text-left">
-                {/* Avatar/Image */}
-                <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-primary/10 mr-4">
-                  {member.image ? (
-                    <img
-                      src={member.image.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${member.image}` : member.image}
-                      srcSet={member.image.endsWith('.jpg') || member.image.endsWith('.jpeg') || member.image.endsWith('.png')
-                        ? `${member.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${member.image} 2x`
-                        : undefined}
-                      alt={member.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                  )}
-                </div>
-                {/* Info */}
-                <div className="flex flex-col justify-center flex-1">
-                  <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-                  <div className="text-primary font-semibold text-base mb-1">{member.position}</div>
-                  {member.city && (
-                    <div className="text-muted-foreground text-sm mb-1">{member.city}</div>
-                  )}
-                  {member.core && (
-                    <div className="inline-block px-3 py-1 rounded-md bg-yellow-200 text-yellow-900 font-semibold text-xs mb-1">Core Member</div>
-                  )}
-                  {member.description && (
-                    <div className="text-muted-foreground text-xs mt-1 line-clamp-3">{member.description}</div>
-                  )}
-                </div>
-              </Card>
-            ))}
+            {loading ? (
+              <LoadingSkeleton type="team" count={3} />
+            ) : error ? (
+              <div className="text-center text-red-500 py-8">{typeof error === 'string' ? error : (error?.message || 'Failed to load team members')}</div>
+            ) : (
+              coreMembers.map(member => (
+                <Card key={member._id} className="flex flex-row items-center justify-center p-6 rounded-2xl shadow-lg w-full h-auto md:w-96 md:h-48 mx-auto text-left">
+                  {/* Avatar/Image */}
+                  <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-primary/10 mr-4">
+                    {member.image ? (
+                      <img
+                        src={member.image.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${member.image}` : member.image}
+                        srcSet={member.image.endsWith('.jpg') || member.image.endsWith('.jpeg') || member.image.endsWith('.png')
+                          ? `${member.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${member.image} 2x`
+                          : undefined}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-2xl font-bold text-primary">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                    )}
+                  </div>
+                  {/* Info */}
+                  <div className="flex flex-col justify-center flex-1">
+                    <h3 className="text-xl font-bold mb-1">{member.name}</h3>
+                    <div className="text-primary font-semibold text-base mb-1">{member.position}</div>
+                    {member.city && (
+                      <div className="text-muted-foreground text-sm mb-1">{member.city}</div>
+                    )}
+                    {member.core && (
+                      <div className="inline-block px-3 py-1 rounded-md bg-yellow-200 text-yellow-900 font-semibold text-xs mb-1">Core Member</div>
+                    )}
+                    {member.description && (
+                      <div className="text-muted-foreground text-xs mt-1 line-clamp-3">{member.description}</div>
+                    )}
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>
+
       <div className="w-full flex justify-center my-8">
         <div className="h-1 w-40 rounded-full" style={{ background: '#800000' }}></div>
       </div>

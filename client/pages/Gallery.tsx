@@ -16,6 +16,7 @@ import {
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useNavigate, useLocation } from "react-router-dom";
 import Footer from "@/components/Footer";
+import TimedCarouselText from "../components/TimedCarouselText";
 import { apiService, GalleryImage } from "@/services/api";
 
 // Utility: detect YouTube link (simple check)
@@ -160,6 +161,19 @@ export default function Gallery() {
 
   const heroImages = useCarouselImages("Gallery Photo");
   const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const gallerySectionTitle = useTextBlock("Gallery Section Title", "Our Moments");
+  const gallerySectionSubheading = useTextBlock("Gallery Section Subheading", "Capturing the essence of leadership, learning, and Community impact through memorable moments at TPC events");
+
+  // White fullscreen loading screen until text blocks AND gallery images are ready
+  const textBlocksLoading = !gallerySectionTitle || !gallerySectionSubheading;
+  const imagesLoading = galleryItems.length === 0;
+  const allDataLoaded = !textBlocksLoading && !imagesLoading;
+  if (!allDataLoaded) {
+    return (
+      <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
+    );
+  }
   const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
 
   return (
@@ -181,19 +195,11 @@ export default function Gallery() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80"></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full md:relative md:h-72 lg:h-80 z-10">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-4">
-            {(() => {
-              const title = useTextBlock("Gallery Section Title", "Our Moments");
-              // Split on 'Moments' to preserve color styling
-              return (
-                <>
-                  <span>{title}</span>
-                </>
-              );
-            })()}
-          </h1>
-          <p className="text-lg md:text-2xl text-white max-w-2xl text-center">
-            {useTextBlock("Gallery Section Subheading", "Capturing the essence of leadership, learning, and Community impact through memorable moments at TPC events")}
-          </p>
+  {gallerySectionTitle}
+</h1>
+<p className="text-lg md:text-2xl text-white max-w-2xl text-center">
+  {gallerySectionSubheading}
+</p>
         </div>
       </section>
 

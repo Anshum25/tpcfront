@@ -42,13 +42,13 @@ export default function Navbar() {
             <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
               <img src="/images/logo.png" alt="TPC Logo" className="w-8 sm:w-10 h-8 sm:h-10 object-contain" />
               <div className="flex flex-col text-left">
-  <div className="font-bold text-base sm:text-lg text-foreground leading-tight">
-    {siteTitle}
-  </div>
-  <div className="text-xs sm:text-sm text-muted-foreground leading-snug">
-    {siteTagline}
-  </div>
-</div>
+                <div className="font-bold text-base sm:text-lg text-foreground leading-tight">
+                  {siteTitle}
+                </div>
+                <div className="text-xs sm:text-sm text-muted-foreground leading-snug">
+                  {siteTagline}
+                </div>
+              </div>
             </Link>
           </div>
 
@@ -64,7 +64,7 @@ export default function Navbar() {
                   {useTextBlock(`Navbar Link ${item.name}`, item.name)}
                 </Button>
               </Link>
-            ))} 
+            ))}
           </div>
 
           {/* Contact Button on Right (Desktop Only) */}
