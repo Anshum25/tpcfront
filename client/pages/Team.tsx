@@ -78,7 +78,7 @@ export default function Team() {
   const connectWithTeamSubheading = useTextBlock("Connect With Team Subheading");
   const joinTeamButton = useTextBlock("Join Team Button");
   const contactTeamButton = useTextBlock("Contact Team Button");
-  const leadersSectionTitle = useTextBlock("Leaders Section Title"); 
+  const leadersSectionTitle = useTextBlock("Leaders Section Title");
   const quickLink2 = useTextBlock("Quick Link 2");
 
   // Team members via React Query
@@ -93,18 +93,7 @@ export default function Team() {
 
   const heroImages = useCarouselImages("Team Photo");
 
-  // White fullscreen loading screen until text blocks AND team data are ready
-  const textBlocksLoading = !teamSectionTitle || !teamSectionSubheading;
-  const allDataLoaded = !textBlocksLoading && !loading;
-  if (!allDataLoaded) {
-    return (
-      <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
-    );
-  }
-
-  const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
-
-  // Cities via React Query
+  // Cities via React Query - MUST BE BEFORE CONDITIONAL RETURN
   const { data: cities = [], isLoading: citiesLoading, error: citiesError } = useQuery<CityData[]>({
     queryKey: ["cities"],
     queryFn: () => apiService.getCities(),
@@ -114,15 +103,7 @@ export default function Team() {
     refetchOnReconnect: false,
   });
 
-  // 1. Filter core members (by a 'core' field if present, or by position)
-  const coreMembers = teamMembers.filter(m => m.core === true);
-  const nonCoreMembers = teamMembers.filter(m => !coreMembers.includes(m));
-  const ahmedabadMembers = nonCoreMembers.filter(m => m.city === 'Ahmedabad');
-  const gandhinagarMembers = nonCoreMembers.filter(m => m.city === 'Gandhinagar');
-  const vadodaraMembers = nonCoreMembers.filter(m => m.city === 'Vadodara');
-  const suratMembers = nonCoreMembers.filter(m => m.city === 'Surat');
-
-  // Memoize active cities to prevent unnecessary re-renders
+  // Memoize active cities to prevent unnecessary re-renders - MOVED BEFORE CONDITIONAL RETURN
   const activeCities = useMemo(() => cities.filter(city => city.isActive), [cities]);
 
   const handleRegisterClick = useCallback((city: CityData) => {
@@ -147,6 +128,25 @@ export default function Team() {
     }
     refreshCities();
   }, []);
+
+  // White fullscreen loading screen until text blocks AND team data are ready
+  const textBlocksLoading = !teamSectionTitle || !teamSectionSubheading;
+  const allDataLoaded = !textBlocksLoading && !loading;
+  if (!allDataLoaded) {
+    return (
+      <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
+    );
+  }
+
+  const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
+
+  // 1. Filter core members (by a 'core' field if present, or by position)
+  const coreMembers = teamMembers.filter(m => m.core === true);
+  const nonCoreMembers = teamMembers.filter(m => !coreMembers.includes(m));
+  const ahmedabadMembers = nonCoreMembers.filter(m => m.city === 'Ahmedabad');
+  const gandhinagarMembers = nonCoreMembers.filter(m => m.city === 'Gandhinagar');
+  const vadodaraMembers = nonCoreMembers.filter(m => m.city === 'Vadodara');
+  const suratMembers = nonCoreMembers.filter(m => m.city === 'Surat');
 
   const BACKEND_URL = import.meta.env.VITE_API_URL; // Change to your backend URL in production
 
@@ -245,7 +245,7 @@ export default function Team() {
           <div className="text-center mb-8">
             <span className="inline-block px-4 py-1 rounded-full border border-primary text-primary font-semibold mb-4">Our Team</span>
             <h2 className="text-4xl md:text-5xl font-extrabold mb-2 underline decoration-primary decoration-4 underline-offset-8">{quickLink2}</h2>
-         
+
           </div>
           {loading ? (
             <LoadingSkeleton type="team" count={8} />
