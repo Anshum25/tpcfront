@@ -1,5 +1,6 @@
 
 import { useTextBlock } from "@/hooks/useTextBlock";
+import { useCarouselImages } from "@/hooks/useCarouselImages";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiService, Advisor } from "@/services/api";
@@ -7,26 +8,6 @@ import Footer from "@/components/Footer";
 import AdvisorSection from "@/components/AdvisorSection";
 import TimedCarouselTextEvents from "../components/TimedCarouselTextEvents";
 
-function useCarouselImages(partPrefix: string) {
-  const { data: images = [] } = useQuery<string[]>({
-    queryKey: ["carouselImages", partPrefix],
-    queryFn: async () => {
-      const allImages = await apiService.getImages();
-      return allImages
-        .filter(img => img.part && img.part.startsWith(partPrefix))
-        .sort((a, b) => {
-          const getNum = (part: string) => parseInt(part.replace(/\D/g, "")) || 0;
-          return getNum(a.part!) - getNum(b.part!);
-        })
-        .map(img => img.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${img.url}` : img.url);
-    },
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-  });
-  return images;
-}
 
 export default function BoardOfAdvisors() {
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -47,16 +28,16 @@ export default function BoardOfAdvisors() {
   // Hero/slider section state and images
   const heroImages = useCarouselImages("Board of Advisors");
 
-  // White fullscreen loading screen until text blocks AND advisors data are ready
+  // White fullscreen loading screen until text blocks are ready (don't wait for advisors data)
   const textBlocksLoading = !advisorsSectionTitle || !advisorsSectionSubheading;
-  const allDataLoaded = !textBlocksLoading && !advisorsLoading;
-  if (!allDataLoaded) {
+  if (textBlocksLoading) {
     return (
       <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
     );
   }
 
   const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
+  console.log(`[BoardOfAdvisors] Hero images: ${heroImages.length}, Visible: ${visibleImages.length}`, visibleImages);
 
   const boardAdvisors = advisorsData.filter((advisor: Advisor) => !advisor.isInteraction);
   const interactions = advisorsData.filter((advisor: Advisor) => advisor.isInteraction);

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, Linkedin } from "lucide-react";
 import { useTextBlock } from "@/hooks/useTextBlock";
+import { useCarouselImages } from "@/hooks/useCarouselImages";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Footer from "@/components/Footer";
@@ -29,26 +30,6 @@ interface Advisor {
   image?: string;
 }
 
-function useCarouselImages(partPrefix: string) {
-  const { data: images = [] } = useQuery<string[]>({
-    queryKey: ["carouselImages", partPrefix],
-    queryFn: async () => {
-      const allImages = await apiService.getImages();
-      return allImages
-        .filter(img => img.part && img.part.startsWith(partPrefix))
-        .sort((a, b) => {
-          const getNum = (part: string) => parseInt(part.replace(/\D/g, "")) || 0;
-          return getNum(a.part!) - getNum(b.part!);
-        })
-        .map(img => img.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${img.url}` : img.url);
-    },
-    staleTime: Infinity,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-  });
-  return images;
-}
 
 
 import { useNavigate } from "react-router-dom";
@@ -85,9 +66,9 @@ export default function Team() {
   const { data: teamMembers = [], isLoading: loading, error } = useQuery<TeamMember[]>({
     queryKey: ["teamMembers"],
     queryFn: () => apiService.getPublicTeamMembers(),
-    staleTime: Infinity,
+    staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
   });
 
@@ -97,9 +78,9 @@ export default function Team() {
   const { data: cities = [], isLoading: citiesLoading, error: citiesError } = useQuery<CityData[]>({
     queryKey: ["cities"],
     queryFn: () => apiService.getCities(),
-    staleTime: Infinity,
+    staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
   });
 
@@ -129,16 +110,16 @@ export default function Team() {
     refreshCities();
   }, []);
 
-  // White fullscreen loading screen until text blocks AND team data are ready
+  // White fullscreen loading screen until text blocks are ready (don't wait for team data)
   const textBlocksLoading = !teamSectionTitle || !teamSectionSubheading;
-  const allDataLoaded = !textBlocksLoading && !loading;
-  if (!allDataLoaded) {
+  if (textBlocksLoading) {
     return (
       <div style={{ background: '#fff', width: '100vw', height: '100vh', position: 'fixed', inset: 0, zIndex: 9999 }} />
     );
   }
 
   const visibleImages = heroImages.length > 0 ? [heroImages[carouselIndex % heroImages.length]] : [];
+  console.log(`[Team] Hero images: ${heroImages.length}, Visible: ${visibleImages.length}`, visibleImages);
 
   // 1. Filter core members (by a 'core' field if present, or by position)
   const coreMembers = teamMembers.filter(m => m.core === true);

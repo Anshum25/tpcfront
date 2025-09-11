@@ -63,56 +63,55 @@ export default function Index({ onHomepageReady }: IndexProps) {
     queryClient.prefetchQuery({
       queryKey: ["teamMembers"],
       queryFn: () => apiService.getPublicTeamMembers(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     queryClient.prefetchQuery({
       queryKey: ["cities"],
       queryFn: () => apiService.getCities(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     // Events page
     queryClient.prefetchQuery({
       queryKey: ["events"],
       queryFn: () => apiService.getEvents(),
-      staleTime: 1000 * 60 * 5,
+      staleTime: 0,
     });
-    // Advisors page
     queryClient.prefetchQuery({
       queryKey: ["advisors"],
       queryFn: () => apiService.getAdvisors(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     // Gallery page
     queryClient.prefetchQuery({
       queryKey: ["galleryImages"],
       queryFn: () => apiService.getGalleryImages(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     // Carousel images for other pages (optional, if not already fetched)
     queryClient.prefetchQuery({
       queryKey: ["carouselImages", "Team Photo"],
       queryFn: () => apiService.getImages(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     queryClient.prefetchQuery({
       queryKey: ["carouselImages", "Events Section"],
       queryFn: () => apiService.getImages(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     queryClient.prefetchQuery({
       queryKey: ["carouselImages", "Contact Us Carousel"],
       queryFn: () => apiService.getImages(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     queryClient.prefetchQuery({
       queryKey: ["carouselImages", "Board of Advisors"],
       queryFn: () => apiService.getImages(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
     queryClient.prefetchQuery({
       queryKey: ["carouselImages", "Gallery Photo"],
       queryFn: () => apiService.getImages(),
-      staleTime: Infinity,
+      staleTime: 0,
     });
   }, [queryClient]);
   const [isReady, setIsReady] = useState(false);
@@ -121,9 +120,9 @@ export default function Index({ onHomepageReady }: IndexProps) {
   const { data: images = [], isLoading: imagesLoading } = useQuery<{ part: string; url: string }[]>({
     queryKey: ["homepageImages"],
     queryFn: () => apiService.getImages(),
-    staleTime: Infinity,
+    staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true, // Allow refetch on mount
     refetchOnReconnect: false,
   });
 
@@ -131,9 +130,9 @@ export default function Index({ onHomepageReady }: IndexProps) {
   const { data: teamMembers = [], isLoading: teamMembersLoading } = useQuery<TeamMember[]>({
     queryKey: ["coreTeamMembers"],
     queryFn: () => apiService.getPublicTeamMembers(),
-    staleTime: Infinity,
+    staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
   });
 
@@ -141,9 +140,9 @@ export default function Index({ onHomepageReady }: IndexProps) {
   const { data: featuredEvents = [], isLoading: featuredEventsLoading } = useQuery<any[]>({
     queryKey: ["featuredEvents"],
     queryFn: () => apiService.getLatestCompletedEvents(),
-    staleTime: Infinity,
+    staleTime: 0, // Always fetch fresh data
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
   });
 

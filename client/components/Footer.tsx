@@ -114,7 +114,7 @@ export default function Footer() {
             <div className="space-y-3 text-gray-300">
               <div className="flex items-center space-x-2">
                 <Mail className="h-2 w-2 text-primary" />
-                <span className="text-sm">{useTextBlock("Footer Contact Email", "official.turningpointCommunity@gmail.com")}</span>
+                <span className="text-sm">{useTextBlock("Footer Contact Email", "official.turningpointcommunity@gmail.com")}</span>
               </div>
               <div className="space-y-1">
                 <div className="flex items-center space-x-2">

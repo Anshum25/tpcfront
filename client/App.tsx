@@ -28,7 +28,11 @@ const BoardOfAdvisors = lazy(() => import("./pages/BoardOfAdvisors"));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours (formerly cacheTime)
+      staleTime: 0, // Always consider data stale by default
+      refetchOnMount: true, // Always refetch on mount
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     },
   },
 });
