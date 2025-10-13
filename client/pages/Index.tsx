@@ -126,15 +126,6 @@ export default function Index({ onHomepageReady }: IndexProps) {
     refetchOnReconnect: false,
   });
 
-  // Core team members via React Query
-  const { data: teamMembers = [], isLoading: teamMembersLoading } = useQuery<TeamMember[]>({
-    queryKey: ["coreTeamMembers"],
-    queryFn: () => apiService.getPublicTeamMembers(),
-    staleTime: 0, // Always fetch fresh data
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    refetchOnReconnect: false,
-  });
 
   // Featured events via React Query
   const { data: featuredEvents = [], isLoading: featuredEventsLoading } = useQuery<any[]>({
@@ -148,7 +139,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
 
   // Dynamic text blocks for all homepage text - MUST BE AT THE TOP LEVEL
   const textBlockTitles = [
-    "Site Title", "Site Tagline", "Homepage Heading", "Homepage Subheading", "About Section Title", "About Section Badge", "Explore Section Title", "Explore Section Subheading", "Quick Link 1", "Quick Link 2", "Quick Link 3", "Quick Link 4", "Quick Link 4 Desc", "Events Section Title", "Events Section Subheading", "Leaders Section Title", "Leaders Section Subheading", "Connect Section Title", "Connect Section Subheading", "What We Do Title", "What We Do 1", "What We Do 2", "What We Do 3", "What We Do 4", "Contact Section Title", "Contact Section Subheading", "Contact Form Title", "Contact Form Subheading", "Contact Form Name", "Contact Form Email", "Contact Form Phone", "Contact Form Subject", "Contact Form Message", "Contact Form Button", "Team Section Title", "Team Section Subheading", "Core Team Title", "Core Team Subheading", "Advisors Section Title", "Advisors Section Subheading", "Connect With Team Title", "Connect With Team Subheading", "Join Team Button", "Contact Team Button"
+    "Site Title", "Site Tagline", "Homepage Heading", "Homepage Subheading", "About Section Title", "About Section Badge", "Explore Section Title", "Explore Section Subheading", "Quick Link 1", "Quick Link 2", "Quick Link 3", "Quick Link 4", "Quick Link 4 Desc", "Events Section Title", "Events Section Subheading", "Connect Section Title", "Connect Section Subheading", "What We Do Title", "What We Do 1", "What We Do 2", "What We Do 3", "What We Do 4", "Contact Section Title", "Contact Section Subheading", "Contact Form Title", "Contact Form Subheading", "Contact Form Name", "Contact Form Email", "Contact Form Phone", "Contact Form Subject", "Contact Form Message", "Contact Form Button", "Team Section Title", "Team Section Subheading", "Advisors Section Title", "Advisors Section Subheading", "Connect With Team Title", "Connect With Team Subheading", "Join Team Button", "Contact Team Button"
   ];
   const textBlocks = textBlockTitles.map(title => useTextBlock(title));
   const aboutTPCDescription = useTextBlock("About TPC Description");
@@ -176,12 +167,12 @@ export default function Index({ onHomepageReady }: IndexProps) {
 
   // Use a single variable assignment from the textBlocks array
   const [
-    siteTitle, siteTagline, homepageHeading, homepageSubheading, aboutSectionTitle, aboutSectionBadge, exploreSectionTitle, exploreSectionSubheading, quickLink1, quickLink2, quickLink3, quickLink4, quickLink4Desc, eventsSectionTitle, eventsSectionSubheading, leadersSectionTitle, leadersSectionSubheading, connectSectionTitle, connectSectionSubheading, whatWeDoTitle, whatWeDo1, whatWeDo2, whatWeDo3, whatWeDo4, contactSectionTitle, contactSectionSubheading, contactFormTitle, contactFormSubheading, contactFormName, contactFormEmail, contactFormPhone, contactFormSubject, contactFormMessage, contactFormButton, teamSectionTitle, teamSectionSubheading, coreTeamTitle, coreTeamSubheading, advisorsSectionTitle, advisorsSectionSubheading, connectWithTeamTitle, connectWithTeamSubheading, joinTeamButton, contactTeamButton
+    siteTitle, siteTagline, homepageHeading, homepageSubheading, aboutSectionTitle, aboutSectionBadge, exploreSectionTitle, exploreSectionSubheading, quickLink1, quickLink2, quickLink3, quickLink4, quickLink4Desc, eventsSectionTitle, eventsSectionSubheading, connectSectionTitle, connectSectionSubheading, whatWeDoTitle, whatWeDo1, whatWeDo2, whatWeDo3, whatWeDo4, contactSectionTitle, contactSectionSubheading, contactFormTitle, contactFormSubheading, contactFormName, contactFormEmail, contactFormPhone, contactFormSubject, contactFormMessage, contactFormButton, teamSectionTitle, teamSectionSubheading, advisorsSectionTitle, advisorsSectionSubheading, connectWithTeamTitle, connectWithTeamSubheading, joinTeamButton, contactTeamButton
   ] = textBlocks;
 
   // Check the loading state correctly using isLoading flags
   const textBlocksLoading = textBlocks.some(val => val === null);
-  const allDataLoaded = !imagesLoading && !teamMembersLoading && !featuredEventsLoading && !textBlocksLoading;
+  const allDataLoaded = !imagesLoading && !featuredEventsLoading && !textBlocksLoading;
 
   useEffect(() => {
     if (allDataLoaded) {
@@ -196,14 +187,12 @@ export default function Index({ onHomepageReady }: IndexProps) {
 
   // Use useMemo to prevent unnecessary re-calculations of derived data
   const {
-    hero1, coreTeamMembers, stats, achievements, quickLinks
+    hero1, stats, achievements, quickLinks
   } = useMemo(() => {
     const hero1 = (() => {
       const h1 = images.find(img => img.part === "Homepage Hero 1");
       return h1 ? (h1.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${h1.url}` : h1.url) : null;
     })();
-
-    const coreTeamMembers = teamMembers.filter((m: TeamMember) => m.core === true);
 
     const stats = [
       { number: stat1Number, label: stat1Label, icon: Users },
@@ -265,9 +254,9 @@ export default function Index({ onHomepageReady }: IndexProps) {
     ];
 
     return {
-      hero1, coreTeamMembers, stats, achievements, quickLinks
+      hero1, stats, achievements, quickLinks
     };
-  }, [images, teamMembers, featuredEvents, textBlocks, stat1Number, stat1Label, stat2Number, stat2Label, stat3Number, stat3Label, stat4Number, stat4Label, achievement1Title, achievement1Subtitle, achievement2Title, achievement2Subtitle, achievement3Title, achievement3Subtitle]);
+  }, [images, featuredEvents, textBlocks, stat1Number, stat1Label, stat2Number, stat2Label, stat3Number, stat3Label, stat4Number, stat4Label, achievement1Title, achievement1Subtitle, achievement2Title, achievement2Subtitle, achievement3Title, achievement3Subtitle]);
 
   // Use a state variable to control the loading screen visibility
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
@@ -284,8 +273,8 @@ export default function Index({ onHomepageReady }: IndexProps) {
   }, [allDataLoaded]);
 
   // Calculate progress for the loading screen
-  const totalItems = 3 + textBlockTitles.length; // 3 queries + all text blocks
-  const loadedItems = (!imagesLoading ? 1 : 0) + (!teamMembersLoading ? 1 : 0) + (!featuredEventsLoading ? 1 : 0) + (textBlocks.filter(val => val !== null).length);
+  const totalItems = 2 + textBlockTitles.length; // 2 queries + all text blocks
+  const loadedItems = (!imagesLoading ? 1 : 0) + (!featuredEventsLoading ? 1 : 0) + (textBlocks.filter(val => val !== null).length);
   const progress = (loadedItems / totalItems) * 100;
 
   if (showLoadingScreen) {
@@ -662,59 +651,6 @@ export default function Index({ onHomepageReady }: IndexProps) {
               <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
           </Link>
-        </div>
-      </section>
-      {/* Core Team Section on Homepage */}
-      <section className="py-16 bg-neutral-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
-            <span className="inline-block px-4 py-1 rounded-full border border-primary text-primary font-semibold mb-4">Core Team</span>
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-2">{leadersSectionTitle}</h2>
-            <p className="text-lg text-muted-foreground">{leadersSectionSubheading}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {coreTeamMembers.map(member => (
-              <Card key={member._id} className="flex flex-row items-center p-8 rounded-2xl shadow-lg">
-                {/* Avatar/Image */}
-                <div className="flex-shrink-0 w-28 h-28 rounded-full overflow-hidden mr-6">
-                  {member.image ? (
-                    <img src={member.image.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${member.image}` : member.image} alt={member.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-28 h-28 rounded-full bg-primary/10 flex items-center justify-center text-3xl font-bold text-primary">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                  )}
-                </div>
-                {/* Info */}
-                <div>
-                  <h3 className="text-2xl font-bold">{member.name}</h3>
-                  <div className="text-primary font-semibold text-lg mb-1">{member.position}</div>
-                  {member.city && (
-                    <div className="text-muted-foreground text-base mb-1">{member.city}</div>
-                  )}
-                  {member.core && (
-                    <div className="inline-block px-3 py-1 rounded-md bg-yellow-200 text-yellow-900 font-semibold text-base mb-1">Core Member</div>
-                  )}
-                  {member.description && (
-                    <div className="text-muted-foreground text-base mt-1">{member.description}</div>
-                  )}
-                  {member.phone && (
-                    <div className="flex items-center text-muted-foreground mb-2">
-                      <Phone className="w-5 h-5 mr-2" />
-                      {member.phone}
-                    </div>
-                  )}
-                </div>
-              </Card>
-            ))}
-          </div>
-          <div className="flex justify-center mt-16">
-            <Link to="/team">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent shadow-lg">
-                View All Team
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
       {/* Social Media Section */}
