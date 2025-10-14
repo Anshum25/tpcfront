@@ -327,11 +327,11 @@ export default function Contact() {
                         <Input id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your full name" required className="h-10 md:h-14 text-sm md:text-xl px-3 md:px-6" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm md:text-xl">{contactFormEmail}</Label>
+                        <Label htmlFor="email" className="text-sm md:text-xl">Email</Label>
                         <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="your.email@example.com" required className="h-10 md:h-14 text-sm md:text-xl px-3 md:px-6" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm md:text-xl">{contactFormPhone}</Label>
+                        <Label htmlFor="phone" className="text-sm md:text-xl">Phone</Label>
                         <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="+91 XXXXX XXXXX" className="h-10 md:h-14 text-sm md:text-xl px-3 md:px-6" />
                       </div>
                       <div className="space-y-2">
