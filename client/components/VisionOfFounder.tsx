@@ -22,7 +22,7 @@ export default function VisionOfFounder() {
         
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
           {/* Left Content - Description and Name */}
-          <div className="space-y-6">
+          <div className="space-y-6 order-2 lg:order-1">
             <div className="space-y-4">
               <h3 className="text-2xl sm:text-3xl font-bold text-foreground">
                 Aditya Bhatt
@@ -69,7 +69,7 @@ export default function VisionOfFounder() {
           </div>
           
           {/* Right Side - Photo */}
-          <div className="relative flex justify-center lg:justify-end">
+          <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
             <div className="relative">
               <div className="w-80 h-80 sm:w-96 sm:h-96 rounded-full overflow-hidden shadow-2xl ring-4 ring-primary/20">
                 <img
