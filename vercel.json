@@ -1,6 +1,6 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "chmod +x ./node_modules/.bin/vite && npm run build",
+  "installCommand": "npm install && npm rebuild vite",
+  "buildCommand": "chmod +x ./node_modules/.bin/vite && npx vite build",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
