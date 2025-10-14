@@ -159,7 +159,8 @@ export default function Admin() {
   const [eventError, setEventError] = useState<string | null>(null);
   const [showEventDialog, setShowEventDialog] = useState(false);
   const [editingEvent, setEditingEvent] = useState<DBEvent | null>(null);
-  const [eventForm, setEventForm] = useState<Partial<DBEvent> & { imageFile?: File | null }>({
+  type EventForm = Partial<DBEvent> & { imageFile?: File | null; [key: string]: any };
+  const [eventForm, setEventForm] = useState<EventForm>({
     title: '',
     description: '',
     date: '',
@@ -636,7 +637,7 @@ export default function Admin() {
     }
     try {
       const formData = new FormData();
-      requiredFields.forEach((field) => formData.append(field, eventForm[field] || ''));
+      requiredFields.forEach((field) => formData.append(field, String(eventForm[field] ?? '')));
       if (eventForm.imageFile) {
         formData.append('image', eventForm.imageFile);
       }

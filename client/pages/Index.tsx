@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import VisionOfFounder from "@/components/VisionOfFounder";
 import {
   Mail,
   Phone,
@@ -46,7 +47,7 @@ import LoadingScreen from "../components/LoadingScreen";
 export { };
 declare global {
   interface Window {
-    __HOMEPAGE_LOAD_STATE__?: { loaded: number; total: number };
+    _HOMEPAGE_LOAD_STATE_?: { loaded: number; total: number };
   }
 }
 
@@ -177,8 +178,8 @@ export default function Index({ onHomepageReady }: IndexProps) {
   useEffect(() => {
     if (allDataLoaded) {
       setIsReady(true);
-      // The old window.__HOMEPAGE_LOAD_STATE__ logic is redundant with this new state
-      // window.__HOMEPAGE_LOAD_STATE__ = { loaded: 1, total: 1 };
+      // The old window._HOMEPAGE_LOAD_STATE_ logic is redundant with this new state
+      // window._HOMEPAGE_LOAD_STATE_ = { loaded: 1, total: 1 };
       if (onHomepageReady) {
         onHomepageReady();
       }
@@ -191,7 +192,11 @@ export default function Index({ onHomepageReady }: IndexProps) {
   } = useMemo(() => {
     const hero1 = (() => {
       const h1 = images.find(img => img.part === "Homepage Hero 1");
-      return h1 ? (h1.url.startsWith("/uploads/") ? `${import.meta.env.VITE_API_URL}${h1.url}` : h1.url) : null;
+      return h1
+        ? (h1.url.startsWith("/uploads/")
+            ? `${import.meta.env.VITE_API_URL}${h1.url}`
+            : h1.url)
+        : null;
     })();
 
     const stats = [
@@ -363,8 +368,10 @@ export default function Index({ onHomepageReady }: IndexProps) {
                   {hero1 && (
                     <img
                       src={hero1}
-                      srcSet={hero1 && (hero1.endsWith('.jpg') || hero1.endsWith('.jpeg') || hero1.endsWith('.png'))
-                        ? `${hero1.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${hero1} 2x`
+                      srcSet={
+                        hero1 &&
+                        (hero1.endsWith('.jpg') || hero1.endsWith('.jpeg') || hero1.endsWith('.png'))
+                          ? `${hero1.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${hero1} 2x`
                         : undefined}
                       alt="Students actively participating in a university lecture"
                       className="w-full h-full object-cover"
@@ -562,6 +569,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
           </div>
         </div>
       </section>
+      <VisionOfFounder />
       {/* Featured Events with Images */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -597,9 +605,17 @@ export default function Index({ onHomepageReady }: IndexProps) {
               >
                 <div className="relative aspect-video overflow-hidden">
                   <img
-                    src={event.image ? (event.image.startsWith('/uploads/') ? `${import.meta.env.VITE_API_URL}${event.image}` : event.image) : '/images/hero.jpg'}
-                    srcSet={event.image && (event.image.endsWith('.jpg') || event.image.endsWith('.jpeg') || event.image.endsWith('.png'))
-                      ? `${event.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${event.image} 2x`
+                    src={
+                      event.image
+                        ? event.image.startsWith('/uploads/')
+                          ? `${import.meta.env.VITE_API_URL}${event.image}`
+                          : event.image
+                        : '/images/hero.jpg'
+                    }
+                    srcSet={
+                      event.image &&
+                      (event.image.endsWith('.jpg') || event.image.endsWith('.jpeg') || event.image.endsWith('.png'))
+                        ? `${event.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')} 1x, ${event.image} 2x`
                       : undefined}
                     alt={event.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -641,6 +657,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
             ))}
           </div>
         </div>
+
         <div className="text-center mt-16">
           <Link to="/events">
             <Button
