@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import VisionOfFounder from "@/components/VisionOfFounder";
 import {
   Mail,
   Phone,
@@ -562,6 +563,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
           </div>
         </div>
       </section>
+      <VisionOfFounder />
       {/* Featured Events with Images */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -641,6 +643,7 @@ export default function Index({ onHomepageReady }: IndexProps) {
             ))}
           </div>
         </div>
+
         <div className="text-center mt-16">
           <Link to="/events">
             <Button
